@@ -5,7 +5,8 @@ Class {
 		'x_i',
 		'xm_i',
 		'payoff',
-		'nb'
+		'nb',
+		'subject'
 	],
 	#category : #'EM-Algo'
 }
@@ -28,6 +29,16 @@ Tour >> payoff [
 { #category : #accessing }
 Tour >> payoff: anObject [
 	payoff := anObject
+]
+
+{ #category : #accessing }
+Tour >> subject [
+	^ subject
+]
+
+{ #category : #accessing }
+Tour >> subject: anObject [
+	subject := anObject
 ]
 
 { #category : #accessing }

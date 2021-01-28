@@ -38,3 +38,13 @@ Parameters >> rhoPlus [
 Parameters >> rhoPlus: anObject [
 	rhoPlus := anObject
 ]
+
+{ #category : #control }
+Parameters >> sur: aDenominator [
+| para |
+para := self class new.
+para alpha: self alpha / aDenominator.
+para rhoPlus: self rhoPlus / aDenominator.
+para rhoMoins: self rhoMoins / aDenominator.
+^ para
+]

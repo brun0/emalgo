@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'tours',
 		'id',
-		'session'
+		'session',
+		'possibleXs'
 	],
 	#category : #'EM-Algo'
 }
@@ -22,6 +23,22 @@ Subject >> id [
 { #category : #accessing }
 Subject >> id: anObject [
 	id := anObject
+]
+
+{ #category : #init }
+Subject >> initT1 [
+self possibleXs: OrderedCollection new.
+1 to: 25 do: [:i | self possibleXs add: i ]
+]
+
+{ #category : #accessing }
+Subject >> possibleXs [
+	^ possibleXs
+]
+
+{ #category : #accessing }
+Subject >> possibleXs: anObject [
+	possibleXs := anObject
 ]
 
 { #category : #accessing }

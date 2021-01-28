@@ -26,10 +26,21 @@ Class {
 	#instVars : [
 		'e',
 		'a',
-		'b'
+		'b',
+		'pq'
 	],
 	#category : #'EM-Algo'
 }
+
+{ #category : #accessing }
+EMStrategy >> pq [
+	^ pq
+]
+
+{ #category : #accessing }
+EMStrategy >> pq: anObject [
+	pq := anObject
+]
 
 { #category : #control }
 EMStrategy >> uMyContrib: x groupContrib: X [

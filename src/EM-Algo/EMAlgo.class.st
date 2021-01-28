@@ -24,9 +24,179 @@ Class {
 	#name : #EMAlgo,
 	#superclass : #Object,
 	#instVars : [
-		'subjects',
-		'groups',
-		'strategies'
+		'population',
+		'strategies',
+		'dataFolder',
+		'psi',
+		'psiMax',
+		'ds',
+		'possibleXs'
 	],
 	#category : #'EM-Algo'
 }
+
+{ #category : #examples }
+EMAlgo class >> example0 [
+	"comment stating purpose of class-side message"
+
+	| algo |
+	algo := self new.
+	algo population: Population new.
+	algo population
+		loadDefaultFile;
+		generatePopulation.
+	algo init.
+	algo initT1.
+	algo computeDs.
+	^algo
+]
+
+{ #category : #examples }
+EMAlgo class >> example1 [
+	"comment stating purpose of class-side message"
+	
+	| algo |
+	algo := self new.
+	algo dataFolder: '/home/bruno/git/interexpe-data/formated-data/'.
+	algo population: Population new.
+	algo population loadDataFile: (algo dataFolder , 'game-data.csv') asFileReference.
+	
+]
+
+{ #category : #control }
+EMAlgo >> computeDs [
+"For optimisation purposes we compute this table only once"
+"Find all usefull anticipations"
+|xmis dico dicoS gain |
+
+xmis:= Set new.
+self population subjects do: [: subj | subj tours 
+	do:[: tour | xmis add: tour xm_i] 
+	].
+
+dico := Dictionary new.
+	self strategies do: [ :strat | 
+		dicoS := Dictionary new.
+		xmis do: [:xmi | 
+			gain := 0.
+			self possibleXs do: [: x |
+				gain := gain + 
+				((strat utilityMyContrib: x groupContrib: xmi param: self psi) exp)].
+			dicoS at: xmi put: gain].
+		dico at: strat class name put: dicoS].
+	self ds: dico
+
+]
+
+{ #category : #accessing }
+EMAlgo >> dataFolder [
+	^ dataFolder
+]
+
+{ #category : #accessing }
+EMAlgo >> dataFolder: anObject [
+	dataFolder := anObject
+]
+
+{ #category : #accessing }
+EMAlgo >> ds [
+	^ ds
+]
+
+{ #category : #accessing }
+EMAlgo >> ds: anObject [
+	ds := anObject
+]
+
+{ #category : #'initailize-release' }
+EMAlgo >> init [
+self intializeStrategies.
+self initParameters.
+
+]
+
+{ #category : #'initailize-release' }
+EMAlgo >> initParameters [
+"Strategies parameters"
+self psiMax: Parameters new.
+self psiMax alpha: 1/5.
+self psiMax rhoMoins: 1/5.
+self psiMax rhoPlus: 1/5.
+self psi: (self psiMax sur: 2).
+
+]
+
+{ #category : #'initailize-release' }
+EMAlgo >> initPq [
+"Probas (proportions of individuals from each strategy)"
+self strategies do: [:s | s pq: 0.25 ]
+
+]
+
+{ #category : #'initailize-release' }
+EMAlgo >> initT1 [
+self possibleXs: OrderedCollection new.
+1 to: 25 do: [:i | self possibleXs add: i ]
+]
+
+{ #category : #'initailize-release' }
+EMAlgo >> intializeStrategies [
+| alt si rec|
+	alt := Altruism new.
+	si := SelfInterst new.
+	rec := Reciprocity new.
+	self strategies add: alt.
+	self strategies add: si.
+	self strategies add: rec.
+]
+
+{ #category : #accessing }
+EMAlgo >> population [
+	^ population
+]
+
+{ #category : #accessing }
+EMAlgo >> population: anObject [
+	population := anObject
+]
+
+{ #category : #accessing }
+EMAlgo >> possibleXs [
+	^ possibleXs
+]
+
+{ #category : #accessing }
+EMAlgo >> possibleXs: anObject [
+	possibleXs := anObject
+]
+
+{ #category : #accessing }
+EMAlgo >> psi [
+	^ psi
+]
+
+{ #category : #accessing }
+EMAlgo >> psi: anObject [
+	psi := anObject
+]
+
+{ #category : #accessing }
+EMAlgo >> psiMax [
+	^ psiMax
+]
+
+{ #category : #accessing }
+EMAlgo >> psiMax: anObject [
+	psiMax := anObject
+]
+
+{ #category : #accessing }
+EMAlgo >> strategies [
+
+	^ strategies ifNil: [self strategies: Set new. ^ strategies]
+]
+
+{ #category : #accessing }
+EMAlgo >> strategies: anObject [
+	strategies := anObject
+]
