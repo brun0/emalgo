@@ -6,10 +6,21 @@ Class {
 		'xm_i',
 		'payoff',
 		'nb',
-		'subject'
+		'subject',
+		'fq'
 	],
 	#category : #'EM-Algo'
 }
+
+{ #category : #accessing }
+Tour >> fq [
+	^ fq
+]
+
+{ #category : #accessing }
+Tour >> fq: anObject [
+	fq := anObject
+]
 
 { #category : #accessing }
 Tour >> nb [

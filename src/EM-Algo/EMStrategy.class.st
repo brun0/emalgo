@@ -33,6 +33,52 @@ Class {
 }
 
 { #category : #accessing }
+EMStrategy >> a [
+	^ a
+]
+
+{ #category : #accessing }
+EMStrategy >> a: anObject [
+	a := anObject
+]
+
+{ #category : #accessing }
+EMStrategy >> b [
+	^ b
+]
+
+{ #category : #accessing }
+EMStrategy >> b: anObject [
+	b := anObject
+]
+
+{ #category : #accessing }
+EMStrategy >> e [
+	^ e
+]
+
+{ #category : #accessing }
+EMStrategy >> e: anObject [
+	e := anObject
+]
+
+{ #category : #'initailize-release' }
+EMStrategy >> init [
+
+self a: 23.
+self b: 0.25.
+self e: 25
+]
+
+{ #category : #'initailize-release' }
+EMStrategy >> initialize [
+
+self a: 23.
+self b: 0.25.
+self e: 25
+]
+
+{ #category : #accessing }
 EMStrategy >> pq [
 	^ pq
 ]

@@ -88,6 +88,32 @@ dico := Dictionary new.
 
 ]
 
+{ #category : #control }
+EMAlgo >> computeToursFqs [
+	"Compute fq for each turn "
+
+	| fqx |
+	self population subjects
+		do: [ :s | 
+			s fiq: Dictionary new.
+			self strategies
+					do: [ :strat | 
+						s fiq at: strat class name put: 1].
+			s tours
+				do: [ :t | 
+					t fq: Dictionary new.
+					self strategies
+						do: [ :strat | 
+							fqx := ((strat utilityMyContrib: t x_i groupContrib: t xm_i param: self psi)
+										/ (self ds at: strat class name) at: t xm_i).
+							t fq
+								at: strat class name
+								put: fqx.
+								s fiq at: strat class name put: ((s fiq at: strat class name) * fqx) ]
+									 ] 
+								]
+]
+
 { #category : #accessing }
 EMAlgo >> dataFolder [
 	^ dataFolder
