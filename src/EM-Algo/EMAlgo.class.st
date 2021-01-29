@@ -40,7 +40,7 @@ Class {
 EMAlgo class >> example0 [
 	"comment stating purpose of class-side message"
 
-	| algo |
+	| algo maxim |
 	algo := self new.
 	algo population: Population new.
 	algo population
@@ -53,7 +53,12 @@ EMAlgo class >> example0 [
 	algo computeToursFqs.
 	algo computeTiq.
 	algo computeG.
-	^algo
+	maxim := Maximizer new.
+	maxim algoIteration: algo.
+	maxim init.
+	maxim maximizeParams.
+	"algo updatePqs."
+	^maxim
 ]
 
 { #category : #examples }
@@ -276,4 +281,14 @@ EMAlgo >> strategies [
 { #category : #accessing }
 EMAlgo >> strategies: anObject [
 	strategies := anObject
+]
+
+{ #category : #control }
+EMAlgo >> updatePqs [
+	"Compute new values of pqs"	
+
+| tiqs |
+self strategies do: [:strat |
+	tiqs := (self population subjects asOrderedCollection collect: [:sub | sub tiq at: strat class name ]). 
+	strat pq: (tiqs sumNumbers)  / (tiqs size)].
 ]

@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'alpha',
 		'rhoPlus',
-		'rhoMoins'
+		'rhoMoins',
+		'vraisemb'
 	],
 	#category : #'EM-Algo'
 }
@@ -17,6 +18,13 @@ Parameters >> alpha [
 { #category : #accessing }
 Parameters >> alpha: anObject [
 	alpha := anObject
+]
+
+{ #category : #control }
+Parameters >> moveA: da rM: drM rP: drP [
+self alpha: ((self alpha + da) min: 0).
+self rhoMoins: ((self rhoMoins + drM) min: 0).
+self rhoPlus: ((self rhoPlus + drP) min: 0).
 ]
 
 { #category : #accessing }
@@ -47,4 +55,14 @@ para alpha: self alpha / aDenominator.
 para rhoPlus: self rhoPlus / aDenominator.
 para rhoMoins: self rhoMoins / aDenominator.
 ^ para
+]
+
+{ #category : #accessing }
+Parameters >> vraisemb [
+	^ vraisemb
+]
+
+{ #category : #accessing }
+Parameters >> vraisemb: anObject [
+	vraisemb := anObject
 ]
