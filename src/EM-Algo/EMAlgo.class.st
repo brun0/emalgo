@@ -48,6 +48,7 @@ EMAlgo class >> example0 [
 	algo init.
 	algo initT1.
 	algo computeDs.
+	algo computeToursFqs.
 	^algo
 ]
 
@@ -92,9 +93,10 @@ dico := Dictionary new.
 EMAlgo >> computeToursFqs [
 	"Compute fq for each turn "
 
-	| fqx |
+	| fqx fiq |
 	self population subjects
 		do: [ :s | 
+			s fi: 0.
 			s fiq: Dictionary new.
 			self strategies
 					do: [ :strat | 
@@ -105,11 +107,13 @@ EMAlgo >> computeToursFqs [
 					self strategies
 						do: [ :strat | 
 							fqx := ((strat utilityMyContrib: t x_i groupContrib: t xm_i param: self psi)
-										/ (self ds at: strat class name) at: t xm_i).
+										/ (self ds at: strat class name) at: t xm_i) exp.
 							t fq
 								at: strat class name
 								put: fqx.
-								s fiq at: strat class name put: ((s fiq at: strat class name) * fqx) ]
+								fiq := (s fiq at: strat class name) * fqx
+								s fiq at: strat class name put: fiq.
+								s fi: s fi + (fiq * strat pq )]
 									 ] 
 								]
 ]

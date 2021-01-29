@@ -6,7 +6,8 @@ Class {
 		'id',
 		'session',
 		'possibleXs',
-		'fiq'
+		'fiq',
+		'fi'
 	],
 	#category : #'EM-Algo'
 }
@@ -14,6 +15,16 @@ Class {
 { #category : #accessing }
 Subject >> addTour: aTour [
 self tours add: aTour
+]
+
+{ #category : #accessing }
+Subject >> fi [
+	^ fi
+]
+
+{ #category : #accessing }
+Subject >> fi: anObject [
+	fi := anObject
 ]
 
 { #category : #accessing }
