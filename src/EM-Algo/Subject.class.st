@@ -7,7 +7,8 @@ Class {
 		'session',
 		'possibleXs',
 		'fiq',
-		'fi'
+		'fi',
+		'tiq'
 	],
 	#category : #'EM-Algo'
 }
@@ -71,6 +72,16 @@ Subject >> session [
 { #category : #accessing }
 Subject >> session: anObject [
 	session := anObject
+]
+
+{ #category : #accessing }
+Subject >> tiq [
+	^ tiq
+]
+
+{ #category : #accessing }
+Subject >> tiq: anObject [
+	tiq := anObject
 ]
 
 { #category : #accessing }

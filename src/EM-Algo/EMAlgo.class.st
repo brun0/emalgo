@@ -48,7 +48,9 @@ EMAlgo class >> example0 [
 	algo init.
 	algo initT1.
 	algo computeDs.
+	algo initPq.
 	algo computeToursFqs.
+	algo computeTiq.
 	^algo
 ]
 
@@ -90,6 +92,21 @@ dico := Dictionary new.
 ]
 
 { #category : #control }
+EMAlgo >> computeTiq [
+"Proba d'appartenance au type q de l'individu i à cette itération"
+	| denom |
+self population subjects do: [ : sub |
+	sub tiq: Dictionary new.
+	denom := 0.
+	self strategies do: [ :strat |
+		denom := denom + ((strat pq) * (sub fiq at: strat class name)).
+	].
+	self strategies do: [ :strat |
+		sub tiq at: strat class name put: ((strat pq) * (sub fiq at: strat class name)) / denom  ]
+ ]
+]
+
+{ #category : #control }
 EMAlgo >> computeToursFqs [
 	"Compute fq for each turn "
 
@@ -101,7 +118,7 @@ EMAlgo >> computeToursFqs [
 			self strategies
 					do: [ :strat | 
 						s fiq at: strat class name put: 1].
-			s tours
+			(s tours select: [: t | t x_i + (t xm_i) > 0])
 				do: [ :t | 
 					t fq: Dictionary new.
 					self strategies
@@ -111,9 +128,9 @@ EMAlgo >> computeToursFqs [
 							t fq
 								at: strat class name
 								put: fqx.
-								fiq := (s fiq at: strat class name) * fqx
+								fiq := (s fiq at: strat class name) * fqx.
 								s fiq at: strat class name put: fiq.
-								s fi: s fi + (fiq * strat pq )]
+								s fi: s fi + (fiq * (strat pq) )]
 									 ] 
 								]
 ]
