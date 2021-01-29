@@ -30,7 +30,8 @@ Class {
 		'psi',
 		'psiMax',
 		'ds',
-		'possibleXs'
+		'possibleXs',
+		'g'
 	],
 	#category : #'EM-Algo'
 }
@@ -51,6 +52,7 @@ EMAlgo class >> example0 [
 	algo initPq.
 	algo computeToursFqs.
 	algo computeTiq.
+	algo computeG.
 	^algo
 ]
 
@@ -92,6 +94,22 @@ dico := Dictionary new.
 ]
 
 { #category : #control }
+EMAlgo >> computeG [
+	| fiq |
+	self g: 0.
+	self population subjects
+		do: [ :sub | 
+			self strategies
+				do: [ :strat | 
+					fiq := sub fiq at: strat class name.
+					fiq <= 0 ifTrue: [ self halt].
+					self
+						g:
+							self g + ((sub tiq at: strat class name)
+								* (strat pq log + ((fiq) log)))]]
+]
+
+{ #category : #control }
 EMAlgo >> computeTiq [
 "Proba d'appartenance au type q de l'individu i à cette itération"
 	| denom |
@@ -102,7 +120,7 @@ self population subjects do: [ : sub |
 		denom := denom + ((strat pq) * (sub fiq at: strat class name)).
 	].
 	self strategies do: [ :strat |
-		sub tiq at: strat class name put: ((strat pq) * (sub fiq at: strat class name)) / denom  ]
+		sub tiqAt: strat class name put: ((strat pq) * (sub fiq at: strat class name)) / denom  ]
  ]
 ]
 
@@ -117,7 +135,7 @@ EMAlgo >> computeToursFqs [
 			s fiq: Dictionary new.
 			self strategies
 					do: [ :strat | 
-						s fiq at: strat class name put: 1].
+						s fiqAt: strat class name put: 1].
 			(s tours select: [: t | t x_i + (t xm_i) > 0])
 				do: [ :t | 
 					t fq: Dictionary new.
@@ -129,7 +147,7 @@ EMAlgo >> computeToursFqs [
 								at: strat class name
 								put: fqx.
 								fiq := (s fiq at: strat class name) * fqx.
-								s fiq at: strat class name put: fiq.
+								s fiqAt: strat class name put: fiq.
 								s fi: s fi + (fiq * (strat pq) )]
 									 ] 
 								]
@@ -155,6 +173,16 @@ EMAlgo >> ds: anObject [
 	ds := anObject
 ]
 
+{ #category : #accessing }
+EMAlgo >> g [
+	^ g
+]
+
+{ #category : #accessing }
+EMAlgo >> g: anObject [
+	g := anObject
+]
+
 { #category : #'initailize-release' }
 EMAlgo >> init [
 self intializeStrategies.
@@ -176,7 +204,9 @@ self psi: (self psiMax sur: 2).
 { #category : #'initailize-release' }
 EMAlgo >> initPq [
 "Probas (proportions of individuals from each strategy)"
-self strategies do: [:s | s pq: 0.25 ]
+| nbStrat |
+nbStrat := self strategies size.
+self strategies do: [:s | s pq: 1 / nbStrat ].
 
 ]
 

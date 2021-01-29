@@ -25,6 +25,7 @@ Subject >> fi [
 
 { #category : #accessing }
 Subject >> fi: anObject [
+anObject < 0 ifTrue: [ self halt ].
 	fi := anObject
 ]
 
@@ -36,6 +37,12 @@ Subject >> fiq [
 { #category : #accessing }
 Subject >> fiq: anObject [
 	fiq := anObject
+]
+
+{ #category : #accessing }
+Subject >> fiqAt: aStratName put: aValue [
+aValue <= 0 ifTrue: [ self halt].
+self fiq at: aStratName put: aValue
 ]
 
 { #category : #accessing }
@@ -82,6 +89,12 @@ Subject >> tiq [
 { #category : #accessing }
 Subject >> tiq: anObject [
 	tiq := anObject
+]
+
+{ #category : #accessing }
+Subject >> tiqAt: aStratName put: anObject [
+	anObject <= 0 ifTrue: [ self halt ].
+	tiq at: aStratName put: anObject
 ]
 
 { #category : #accessing }

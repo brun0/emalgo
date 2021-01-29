@@ -10,10 +10,11 @@ Altruism >> utilityMyContrib: x_i groupContrib: xm_i param: parameters [
 
 	"scope: class-variables  &  instance-variables"
 
-	| alpha |
+	| alpha u |
 	alpha := parameters alpha.
-	^ (self uMyContrib: x_i groupContrib: xm_i)
+	u := (self uMyContrib: x_i groupContrib: xm_i)
 		+
 			(alpha * 7
-				* (self uMyContrib: xm_i / 7 groupContrib: xm_i + x_i - (xm_i / 7)))
+				* (self uMyContrib: xm_i / 7 groupContrib: xm_i + x_i - (xm_i / 7))).
+	^ u / 1000
 ]
