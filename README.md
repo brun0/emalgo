@@ -1,4 +1,4 @@
-# Specific Expectation Maximisation Algorithm for behavioral economics
+Specific Expectation Maximisation Algorithm for behavioral economics
 
 ## Install
 
