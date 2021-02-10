@@ -13,6 +13,13 @@ Class {
 	#category : #'EM-Algo'
 }
 
+{ #category : #control }
+Maximizer class >> computeVraisemblance: aParameters [
+	"Just to access the method of the same name of the sole instance of the class"
+
+	^ self allInstances first computeVraisemblance: aParameters
+]
+
 { #category : #accessing }
 Maximizer >> algoIteration [
 	^ AlgoIteration
@@ -62,6 +69,22 @@ Maximizer >> grapher [
 { #category : #accessing }
 Maximizer >> grapher: anObject [
 	grapher := anObject
+]
+
+{ #category : #control }
+Maximizer >> hillClimCandidateParams [
+| fBlock educatedGuess hillClimber result |
+fBlock := [:v |
+    |a rM rP|
+    a := v at: 1.
+    rM := v at: 2.
+	 rP := v at: 3.
+    Maximizer computeVraisemblance: Parameters new; alpha: a; rhoMoins: rM; rhoPlus: rP].
+
+	self candidateParameters do: [ :cParam |
+		educatedGuess := cParam asPMVector.
+		self moveParameterCandidate: cParam].
+	 self grapher view signalUpdate.
 ]
 
 { #category : #'initailize-release' }
@@ -121,8 +144,8 @@ c :=  RTComposer new.
 	maxV := (self candidateParameters collect: [: p | p vraisemb]) max.
 	minV := (self candidateParameters collect: [: p | p vraisemb]) min.
 	nCols := RTMultiLinearColor new.
-	nCols colors: { Color red . Color green }.
-	nCols command: [: aPar | (aPar vraisemb - minV) / (maxV) ].
+	nCols colors: (RTColorPalette sequential colors: 7 scheme:'Reds').
+	nCols command: [: aPar | (8 * (aPar vraisemb - minV) / (maxV)) asInteger].
 
 " alpha - rho scatterplot "
 b := RTGrapher new.
@@ -169,7 +192,7 @@ self candidateParameters do: [: par |
 	l color: Color black.
 	l shape head color: Color black.
 	"c view addAll: (Array with: e1 with: e2 with: l)"
-	c view add: l]].
+	"c view add: l"]].
 b2 add: ds2.
 b2 build.
 c group: #rhoPlusRhoMoins.
@@ -187,7 +210,7 @@ c propagateHighlightToAll.
 Maximizer >> initialize [ 
 self nbIterations: 8.
 self nbMove: 2.
-self nbSamples: 4.
+self nbSamples: 2.
 self show: true.
 self candidateParameters: OrderedCollection new.
 ]

@@ -1,10 +1,8 @@
 Class {
 	#name : #Parameters,
-	#superclass : #Object,
+	#superclass : #PMVector,
+	#type : #variable,
 	#instVars : [
-		'alpha',
-		'rhoPlus',
-		'rhoMoins',
 		'vraisemb',
 		'lastPoint',
 		'visu'
@@ -12,14 +10,19 @@ Class {
 	#category : #'EM-Algo'
 }
 
+{ #category : #'instance creation' }
+Parameters class >> new [
+^self new: 3.
+]
+
 { #category : #accessing }
 Parameters >> alpha [
-	^ alpha
+	^ self at: 1
 ]
 
 { #category : #accessing }
 Parameters >> alpha: anObject [
-	alpha := anObject
+	self at: 1 put: anObject
 ]
 
 { #category : #accessing }
@@ -42,22 +45,22 @@ self rhoPlus: ((self rhoPlus + drP) max: 0).
 
 { #category : #accessing }
 Parameters >> rhoMoins [
-	^ rhoMoins
+	^ self at: 2
 ]
 
 { #category : #accessing }
 Parameters >> rhoMoins: anObject [
-	rhoMoins := anObject
+	self at: 2 put: anObject
 ]
 
 { #category : #accessing }
 Parameters >> rhoPlus [
-	^ rhoPlus
+	^ self at: 3
 ]
 
 { #category : #accessing }
 Parameters >> rhoPlus: anObject [
-	rhoPlus := anObject
+	self at: 3 put: anObject
 ]
 
 { #category : #control }
