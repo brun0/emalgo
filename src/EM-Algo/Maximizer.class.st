@@ -6,7 +6,9 @@ Class {
 		'candidateParameters',
 		'nbSamples',
 		'nbMove',
-		'nbIterations'
+		'nbIterations',
+		'show',
+		'grapher'
 	],
 	#category : #'EM-Algo'
 }
@@ -46,17 +48,37 @@ self algoIteration psi: iterationParam.
 ]
 
 { #category : #'initailize-release' }
+Maximizer >> gradientView [
+| view |
+view := RTView new.
+
+]
+
+{ #category : #accessing }
+Maximizer >> grapher [
+	^ grapher
+]
+
+{ #category : #accessing }
+Maximizer >> grapher: anObject [
+	grapher := anObject
+]
+
+{ #category : #'initailize-release' }
 Maximizer >> init [
 	"Generate candidate parameters"
-	| para alphas rhosPlus rhosMoins |
+	| para alphas rhosPlus rhosMoins da drP drM |
 	alphas := OrderedCollection new.
 	rhosPlus := OrderedCollection new.
 	rhosMoins := OrderedCollection new.
-	1 to: self nbSamples do: [ :i | 
-		alphas add: i / self nbSamples * self algoIteration psiMax alpha.
-		rhosPlus add: i / self nbSamples * self algoIteration psiMax rhoPlus.
+	da := 1 / self nbSamples * self algoIteration psiMax alpha.
+	drP := 1 / self nbSamples * self algoIteration psiMax rhoPlus.
+	drM := 1 / self nbSamples * self algoIteration psiMax rhoMoins.
+	0 to: self nbSamples do: [ :i | 
+		alphas add: i * da.
+		rhosPlus add: i * drP.
 		rhosMoins
-			add: i / self nbSamples * self algoIteration psiMax rhoMoins ].
+			add: i * drM].
 	alphas
 		do: [ :a | 
 			rhosPlus
@@ -64,35 +86,125 @@ Maximizer >> init [
 					rhosMoins
 						do: [ :rM | 
 							para := Parameters new.
-							para alpha: a.
-							para rhoMoins: rM.
-							para rhoPlus: rP.
+							para alpha: a + ((self algoIteration rNG next) * da).
+							para rhoMoins: rM + ((self algoIteration rNG next) * drM).
+							para rhoPlus: rP + ((self algoIteration rNG next) * drP).
 							para vraisemb: (self computeVraisemblance: para).
-							self candidateParameters add: para ] ] ]
+							self candidateParameters add: para ] ] ].
+				self show ifTrue: [ ^ self initVisualization3D ].
+]
+
+{ #category : #'initailize-release' }
+Maximizer >> initVisualization [
+	"Create a window for following parameter move"
+| b ds v |
+b := RTGrapher new.
+b extent: 200 @ 200.
+ds := RTData new.
+ds dotShape cross color: (Color red alpha: 0.3).
+ds points: self candidateParameters.
+ds x: #alpha.
+ds y: #rhoMoins.
+b add: ds.
+b openIn: b view.
+self grapher: b.
+b view openInWindowSized:  (300 @ 300) titled: 'Parameters Maximisation'.
+"b renderIn: v."
+ ^ b view
+]
+
+{ #category : #'initailize-release' }
+Maximizer >> initVisualization3D [
+	"Create a window for following parameter move"
+| c b ds b2 ds2 nCols maxV minV l e1 e2 |
+c :=  RTComposer new.
+	maxV := (self candidateParameters collect: [: p | p vraisemb]) max.
+	minV := (self candidateParameters collect: [: p | p vraisemb]) min.
+	nCols := RTMultiLinearColor new.
+	nCols colors: { Color red . Color green }.
+	nCols command: [: aPar | (aPar vraisemb - minV) / (maxV) ].
+
+" alpha - rho scatterplot "
+b := RTGrapher new.
+b extent: 100 @ 100.
+b view: c view.
+ds := RTData new.
+ds interaction popup.
+ds dotShape color: nCols.
+ds points: self candidateParameters.
+ds elements do: [ :point | point model visu: point ].
+ds x: #alpha.
+ds y: #rhoMoins.
+b add: ds.
+b build.
+self candidateParameters do: [: par | 
+	par lastPoint ifNotNil:[
+	e1 := par visu.
+	e2 := par lastPoint visu.
+	l := RTArrowedLine edgeFrom: e2 to: e1.
+	l shape scale: 0.5.
+	l color: Color black.
+	l shape head color: Color black.
+	"c view addAll: (Array with: e1 with: e2 with: l)"
+	c view add: l]].
+	c group: #alphaRhoM.
+
+" rhoMoins - rhoPlus scatterplot "
+b2 := RTGrapher new.
+b2 view: c view.
+b2 extent: 100 @ 100.
+ds2 := RTData new.
+b2 interaction popup.
+ds2 dotShape color: nCols.
+ds2 points: self candidateParameters.
+ds2 elements do: [ :point | point model visu: point ].
+ds2 x: #rhoPlus.
+ds2 y: #rhoMoins.
+self candidateParameters do: [: par | 
+	par lastPoint ifNotNil:[
+	e1 := par visu.
+	e2 := par lastPoint visu.
+	l := RTArrowedLine edgeFrom: e2 to: e1.
+	l shape scale: 0.5.
+	l color: Color black.
+	l shape head color: Color black.
+	"c view addAll: (Array with: e1 with: e2 with: l)"
+	c view add: l]].
+b2 add: ds2.
+b2 build.
+c group: #rhoPlusRhoMoins.
+
+"layouting"
+c move: #rhoPlusRhoMoins onTheLeftOf: #alphaRhoM .
+self grapher: c.
+c view openInWindowSized:  (300 @ 300) titled: 'Parameters Maximisation'.
+"RTMetricNormalizer new view: c view; objects: self candidateParameters; distinctColor."
+c propagateHighlightToAll.
+ ^ c view
 ]
 
 { #category : #initialization }
 Maximizer >> initialize [ 
 self nbIterations: 8.
-self nbMove: 5.
-self nbSamples: 5.
+self nbMove: 2.
+self nbSamples: 4.
+self show: true.
 self candidateParameters: OrderedCollection new.
 ]
 
 { #category : #control }
 Maximizer >> maximizeParams [
-| movedParams |
+|  |
 1 to: self nbMove do: [ :mov |
-	movedParams := OrderedCollection new.
 	self candidateParameters do: [ :cParam |
-		movedParams add: (self moveParameterCandidate: cParam)].
-	self candidateParameters: movedParams.
+		self moveParameterCandidate: cParam].
+	 self grapher view signalUpdate.
 	 ]
 ]
 
 { #category : #control }
 Maximizer >> moveParameterCandidate: aParameters [
-	| vParam maxis da drM drP movedParam |
+	| vParam maxis da drM drP |
 	maxis := self algoIteration psiMax.
 	vParam := aParameters vraisemb.
 	da := ((self
@@ -107,9 +219,9 @@ Maximizer >> moveParameterCandidate: aParameters [
 		computeVraisemblance:
 			(aParameters copy rhoPlus: aParameters rhoPlus + (maxis rhoPlus / 100)))
 		- vParam) sign * (maxis rhoPlus / 20).
-	movedParam := aParameters copy moveA: da rM: drM rP: drP.
-	movedParam vraisemb: (self computeVraisemblance: movedParam).
-	^ movedParam
+	aParameters moveA: da rM: drM rP: drP.
+	aParameters vraisemb: (self computeVraisemblance: aParameters).
+	^ aParameters
 ]
 
 { #category : #accessing }
@@ -140,4 +252,14 @@ Maximizer >> nbSamples [
 { #category : #accessing }
 Maximizer >> nbSamples: anObject [
 	nbSamples := anObject
+]
+
+{ #category : #accessing }
+Maximizer >> show [
+	^ show
+]
+
+{ #category : #accessing }
+Maximizer >> show: anObject [
+	show := anObject
 ]

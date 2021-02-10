@@ -31,7 +31,9 @@ Class {
 		'psiMax',
 		'ds',
 		'possibleXs',
-		'g'
+		'g',
+		'maximizer',
+		'rNG'
 	],
 	#category : #'EM-Algo'
 }
@@ -55,10 +57,12 @@ EMAlgo class >> example0 [
 	algo computeG.
 	maxim := Maximizer new.
 	maxim algoIteration: algo.
+	algo maximizer: maxim.
 	maxim init.
 	maxim maximizeParams.
-	"algo updatePqs."
 	^maxim
+	"algo updatePqs.
+	^algo"
 ]
 
 { #category : #examples }
@@ -192,6 +196,7 @@ EMAlgo >> g: anObject [
 EMAlgo >> init [
 self intializeStrategies.
 self initParameters.
+self rNG: Random new.
 
 ]
 
@@ -233,6 +238,16 @@ EMAlgo >> intializeStrategies [
 ]
 
 { #category : #accessing }
+EMAlgo >> maximizer [
+	^ maximizer
+]
+
+{ #category : #accessing }
+EMAlgo >> maximizer: anObject [
+	maximizer := anObject
+]
+
+{ #category : #accessing }
 EMAlgo >> population [
 	^ population
 ]
@@ -270,6 +285,16 @@ EMAlgo >> psiMax [
 { #category : #accessing }
 EMAlgo >> psiMax: anObject [
 	psiMax := anObject
+]
+
+{ #category : #accessing }
+EMAlgo >> rNG [
+	^ rNG
+]
+
+{ #category : #accessing }
+EMAlgo >> rNG: anObject [
+	rNG := anObject
 ]
 
 { #category : #accessing }
