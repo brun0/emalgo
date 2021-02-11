@@ -10,6 +10,6 @@ SelfInterst >> utilityMyContrib: x_i groupContrib: xm_i param: parameters [
 	"scope: class-variables  &  instance-variables"	
 	| u |
 	u := self uMyContrib: x_i groupContrib: xm_i.
-	^ u / 100000
+	^ u / 100
 
 ]

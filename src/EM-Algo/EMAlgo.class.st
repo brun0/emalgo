@@ -177,16 +177,24 @@ EMAlgo >> computeToursFqs [
 					t fq: Dictionary new.
 					self strategies
 						do: [ :strat | 
-							fqx := ((strat utilityMyContrib: t x_i groupContrib: t xm_i param: self psi)
-										/ (self ds at: strat class name) at: t xm_i) exp.
+							fqx := ((strat utilityMyContrib: t x_i groupContrib: t xm_i param: self psi) exp
+										/ (self ds at: strat class name) at: t xm_i).
 							t fq
 								at: strat class name
 								put: fqx.
 								fiq := (s fiq at: strat class name) * fqx.
-								s fiqAt: strat class name put: fiq.
-								s fi: s fi + (fiq * (strat pq) )]
+								s fiqAt: strat class name put: fiq.]
 									 ] 
-								]
+								].
+	self population subjects
+		do: [ :s | 
+			s fi: 0.
+			self strategies
+				do: [ :strat | 
+			s fi: s fi + ((s fiq at: strat class name) * (strat pq) )
+			]]
+					
+				
 ]
 
 { #category : #accessing }

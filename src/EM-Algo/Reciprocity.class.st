@@ -17,5 +17,5 @@ Reciprocity >> utilityMyContrib: x_i groupContrib: xm_i param: parameters [
 			(rho * 7
 				*
 					(self uMyContrib: xm_i / 7 groupContrib: xm_i + x_i - (xm_i / 7))).
-	^ u / 100000
+	^ u / 100
 ]
