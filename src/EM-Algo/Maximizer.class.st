@@ -139,6 +139,60 @@ b view openInWindowSized:  (300 @ 300) titled: 'Parameters Maximisation'.
 { #category : #'initailize-release' }
 Maximizer >> initVisualization3D [
 	"Create a window for following parameter move"
+| g b ds b2 ds2 nCols maxV minV l e1 e2 chart c xs ys p g1 c0 zs g2 c2 z p2 |
+c0 := RSCanvas new.
+
+" alpha - rho scatterplot "
+	xs := self candidateParameters collect: [:par | par alpha].
+	ys := self candidateParameters collect: [:par | par rhoMoins ].
+	zs := self candidateParameters collect: [:par | par rhoPlus ].
+	g1 := RSGroup new.
+	c := RSChart new.
+	c container: g1.
+	c xlabel: 'alpha'.
+	c ylabel: 'RhoMoins'.
+	p := RSScatterPlot new  x: xs y: ys.
+	p color: Color blue translucent.
+	p processBlock: [ :shapes | 
+		shapes models: self candidateParameters.
+		RSNormalizer color
+			shapes: shapes;
+			normalize: #vraisemb.
+		shapes translucent ].
+	c addPlot: p.
+
+	c addDecoration: (RSHorizontalTick new doNotUseNiceLabel asFloat: 3).
+	c addDecoration: RSVerticalTick new.
+c build.
+
+	g2 := RSGroup new.
+	c2 := RSChart new.
+	c2 container: g2.
+	p2 := RSScatterPlot new  x: zs y: ys.
+	p2 color: Color blue translucent.
+	p2 processBlock: [ :shapes | 
+		shapes models: self candidateParameters.
+		RSNormalizer color
+			shapes: shapes;
+			normalize: #vraisemb.
+		shapes translucent ].
+	c2 ylabel: 'RhoMoins'.
+	c2 xlabel: 'RhoPlus'.
+	c2 addPlot: p2.
+	c2 build.
+
+	c0 add: g1 asShape; add: g2 asShape.
+	RSHorizontalLineLayout on: c0 shapes.
+
+	c0 @ RSCanvasController.
+	^ c0 
+
+
+]
+
+{ #category : #'initailize-release' }
+Maximizer >> initVisualization3DR2 [
+	"Create a window for following parameter move"
 | c b ds b2 ds2 nCols maxV minV l e1 e2 |
 c :=  RTComposer new.
 	maxV := (self candidateParameters collect: [: p | p vraisemb]) max.
@@ -152,6 +206,76 @@ b := RTGrapher new.
 b extent: 100 @ 100.
 b view: c view.
 ds := RTData new.
+ds interaction popup.
+ds dotShape color: nCols.
+ds points: self candidateParameters.
+ds elements do: [ :point | point model visu: point ].
+ds x: #alpha.
+ds y: #rhoMoins.
+b add: ds.
+b build.
+self candidateParameters do: [: par | 
+	par lastPoint ifNotNil:[
+	e1 := par visu.
+	e2 := par lastPoint visu.
+	l := RTArrowedLine edgeFrom: e2 to: e1.
+	l shape scale: 0.5.
+	l color: Color black.
+	l shape head color: Color black.
+	"c view addAll: (Array with: e1 with: e2 with: l)"
+	c view add: l]].
+	c group: #alphaRhoM.
+
+" rhoMoins - rhoPlus scatterplot "
+b2 := RTGrapher new.
+b2 view: c view.
+b2 extent: 100 @ 100.
+ds2 := RTData new.
+b2 interaction popup.
+ds2 dotShape color: nCols.
+ds2 points: self candidateParameters.
+ds2 elements do: [ :point | point model visu: point ].
+ds2 x: #rhoPlus.
+ds2 y: #rhoMoins.
+self candidateParameters do: [: par | 
+	par lastPoint ifNotNil:[
+	e1 := par visu.
+	e2 := par lastPoint visu.
+	l := RTArrowedLine edgeFrom: e2 to: e1.
+	l shape scale: 0.5.
+	l color: Color black.
+	l shape head color: Color black.
+	"c view addAll: (Array with: e1 with: e2 with: l)"
+	"c view add: l"]].
+b2 add: ds2.
+b2 build.
+c group: #rhoPlusRhoMoins.
+
+"layouting"
+c move: #rhoPlusRhoMoins onTheLeftOf: #alphaRhoM .
+self grapher: c.
+c view openInWindowSized:  (300 @ 300) titled: 'Parameters Maximisation'.
+"RTMetricNormalizer new view: c view; objects: self candidateParameters; distinctColor."
+c propagateHighlightToAll.
+ ^ c view
+]
+
+{ #category : #'initailize-release' }
+Maximizer >> initVisualization3Roassal2 [
+	"Create a window for following parameter move"
+| g b ds b2 ds2 nCols maxV minV l e1 e2 chart c |
+g :=  RSGroup new.
+	"maxV := (self candidateParameters collect: [: p | p vraisemb]) max.
+	minV := (self candidateParameters collect: [: p | p vraisemb]) min.
+	nCols := RSMultiLinearColor new.
+	nCols colors: RSColorPalette sequential ylorrd5.
+	nCols command: [: aPar | (8 * (aPar vraisemb - minV) / (maxV)) asInteger]."
+
+" alpha - rho scatterplot "
+	chart := RSChart new.
+b := RSScatterPlot new.
+b container: g.
+ds := RSData new.
 ds interaction popup.
 ds dotShape color: nCols.
 ds points: self candidateParameters.
@@ -221,7 +345,6 @@ Maximizer >> maximizeParams [
 1 to: self nbMove do: [ :mov |
 	self candidateParameters do: [ :cParam |
 		self moveParameterCandidate: cParam].
-	 self grapher view signalUpdate.
 	 ]
 ]
 
