@@ -82,9 +82,18 @@ fBlock := [:v |
     Maximizer computeVraisemblance: Parameters new; alpha: a; rhoMoins: rM; rhoPlus: rP].
 
 	self candidateParameters do: [ :cParam |
-		educatedGuess := cParam asPMVector.
-		self moveParameterCandidate: cParam].
-	 self grapher view signalUpdate.
+		educatedGuess := cParam.
+		hillClimber := PMHillClimbingOptimizer maximizingFunction: fBlock.
+		hillClimber initialValue: educatedGuess.
+		result := hillClimber evaluate.
+		cParam alpha: (result at:1);
+		rhoMoins: (result at:2);
+		rhoPlus: (result at:3).
+		cParam lastPoint: cParam].
+	
+
+
+
 ]
 
 { #category : #'initailize-release' }
@@ -139,7 +148,7 @@ b view openInWindowSized:  (300 @ 300) titled: 'Parameters Maximisation'.
 { #category : #'initailize-release' }
 Maximizer >> initVisualization3D [
 	"Create a window for following parameter move"
-| g b ds b2 ds2 nCols maxV minV l e1 e2 chart c xs ys p g1 c0 zs g2 c2 z p2 |
+| g b ds b2 ds2 nCols maxV minV l e1 e2 chart c xs ys p g1 c0 zs g2 c2 z p2 lastXs lastYs lastZs lastP trajX trajY |
 c0 := RSCanvas new.
 
 " alpha - rho scatterplot "
@@ -160,6 +169,19 @@ c0 := RSCanvas new.
 			normalize: #vraisemb.
 		shapes translucent ].
 	c addPlot: p.
+	self candidateParameters do:[:par |
+		par lastPoint ifNotNil: [ 
+		trajX := OrderedCollection new.
+		trajY := OrderedCollection new.
+		trajX add: par lastPoint alpha.
+		trajX add: par alpha.
+		trajY add: par lastPoint rhoMoins.
+		trajY add: par rhoMoins.
+		l :=  RSLinePlot new  x: trajX y: trajY.
+		l color: Color gray.
+		c addPlot: l.
+		 ]
+		].
 
 	c addDecoration: (RSHorizontalTick new doNotUseNiceLabel asFloat: 3).
 	c addDecoration: RSVerticalTick new.
@@ -179,6 +201,19 @@ c build.
 	c2 ylabel: 'RhoMoins'.
 	c2 xlabel: 'RhoPlus'.
 	c2 addPlot: p2.
+		self candidateParameters do:[:par |
+					par lastPoint ifNotNil: [ 
+		trajX := OrderedCollection new.
+		trajY := OrderedCollection new.
+		trajX add: par lastPoint rhoPlus.
+		trajX add: par rhoPlus.
+		trajY add: par lastPoint rhoMoins.
+		trajY add: par rhoMoins.
+		l :=  RSLinePlot new  x: trajX y: trajY.
+		l color: Color gray.
+		c2 addPlot: l.
+		]
+		].
 	c2 build.
 
 	c0 add: g1 asShape; add: g2 asShape.
@@ -334,7 +369,7 @@ c propagateHighlightToAll.
 Maximizer >> initialize [ 
 self nbIterations: 8.
 self nbMove: 2.
-self nbSamples: 2.
+self nbSamples: 1.
 self show: true.
 self candidateParameters: OrderedCollection new.
 ]
