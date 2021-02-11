@@ -10,14 +10,29 @@ Class {
 		'show',
 		'grapher'
 	],
+	#classInstVars : [
+		'actualInstance'
+	],
 	#category : #'EM-Algo'
 }
+
+{ #category : #accessing }
+Maximizer class >> actualInstance [
+
+	^ actualInstance
+]
+
+{ #category : #accessing }
+Maximizer class >> actualInstance: anObject [
+
+	actualInstance := anObject
+]
 
 { #category : #control }
 Maximizer class >> computeVraisemblance: aParameters [
 	"Just to access the method of the same name of the sole instance of the class"
 
-	^ self allInstances first computeVraisemblance: aParameters
+	^ self actualInstance computeVraisemblance: aParameters
 ]
 
 { #category : #accessing }
@@ -72,16 +87,17 @@ Maximizer >> grapher: anObject [
 ]
 
 { #category : #control }
-Maximizer >> hillClimCandidateParams [
+Maximizer >> hillClimMaximizeParams [
 | fBlock educatedGuess hillClimber result |
 fBlock := [:v |
     |a rM rP|
-    a := v at: 1.
-    rM := v at: 2.
-	 rP := v at: 3.
-    Maximizer computeVraisemblance: Parameters new; alpha: a; rhoMoins: rM; rhoPlus: rP].
+    a := (v at: 1) max: 0.
+    rM := (v at: 2) max: 0.
+	 rP := (v at: 3) max: 0.
+    Maximizer computeVraisemblance: (Parameters new alpha: a; rhoMoins: rM; rhoPlus: rP)].
 
 	self candidateParameters do: [ :cParam |
+		cParam lastPoint: cParam copy.
 		educatedGuess := cParam.
 		hillClimber := PMHillClimbingOptimizer maximizingFunction: fBlock.
 		hillClimber initialValue: educatedGuess.
@@ -89,7 +105,7 @@ fBlock := [:v |
 		cParam alpha: (result at:1);
 		rhoMoins: (result at:2);
 		rhoPlus: (result at:3).
-		cParam lastPoint: cParam].
+		].
 	
 
 
@@ -372,6 +388,7 @@ self nbMove: 2.
 self nbSamples: 1.
 self show: true.
 self candidateParameters: OrderedCollection new.
+self class actualInstance: self.
 ]
 
 { #category : #control }

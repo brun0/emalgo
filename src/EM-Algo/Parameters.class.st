@@ -12,7 +12,7 @@ Class {
 
 { #category : #'instance creation' }
 Parameters class >> new [
-^self new: 3.
+^(self new: 3).
 ]
 
 { #category : #accessing }
@@ -22,6 +22,8 @@ Parameters >> alpha [
 
 { #category : #accessing }
 Parameters >> alpha: anObject [
+
+	anObject < 0 ifTrue:[self halt].
 	self at: 1 put: anObject
 ]
 
@@ -50,6 +52,8 @@ Parameters >> rhoMoins [
 
 { #category : #accessing }
 Parameters >> rhoMoins: anObject [
+	
+	anObject < 0 ifTrue:[self halt].
 	self at: 2 put: anObject
 ]
 
@@ -60,6 +64,8 @@ Parameters >> rhoPlus [
 
 { #category : #accessing }
 Parameters >> rhoPlus: anObject [
+
+	anObject < 0 ifTrue:[self halt].
 	self at: 3 put: anObject
 ]
 

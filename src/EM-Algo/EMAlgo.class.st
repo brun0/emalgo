@@ -77,6 +77,33 @@ EMAlgo class >> example1 [
 	
 ]
 
+{ #category : #examples }
+EMAlgo class >> exampleHill0 [
+	"comment stating purpose of class-side message"
+
+	| algo maxim |
+	algo := self new.
+	algo population: Population new.
+	algo population
+		loadDefaultFile;
+		generatePopulation.
+	algo init.
+	algo initT1.
+	algo computeDs.
+	algo initPq.
+	algo computeToursFqs.
+	algo computeTiq.
+	algo computeG.
+	maxim := Maximizer new.
+	maxim algoIteration: algo.
+	algo maximizer: maxim.
+	maxim init.
+	maxim hillClimMaximizeParams.
+	^maxim
+	"algo updatePqs.
+	^algo"
+]
+
 { #category : #control }
 EMAlgo >> computeDs [
 "For optimisation purposes we compute this table only once"

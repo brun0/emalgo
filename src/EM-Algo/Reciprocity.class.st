@@ -9,13 +9,13 @@ Reciprocity >> utilityMyContrib: x_i groupContrib: xm_i param: parameters [
 	"Basic utility function"
 
 	| rho u |
-	rho := parameters rhoMoins.
+	rho := parameters rhoMoins negated.
 	x_i >= (xm_i / 7)
-		ifTrue: [ rho := parameters rhoPlus ].
+		ifTrue: [ rho := parameters rhoPlus].
 	u := (self uMyContrib: x_i groupContrib: xm_i)
 		+
 			(rho * 7
 				*
 					(self uMyContrib: xm_i / 7 groupContrib: xm_i + x_i - (xm_i / 7))).
-	^ u / 1000
+	^ u / 100000
 ]

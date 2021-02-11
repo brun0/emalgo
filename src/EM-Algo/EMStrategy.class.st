@@ -90,9 +90,10 @@ EMStrategy >> pq: anObject [
 
 { #category : #control }
 EMStrategy >> uMyContrib: x groupContrib: X [
+
 	"basic utility function"
 
-	^ e - x + (x / (x + X) * (a * (x + X) - (b * ((x + X) ** 2))))
+	^ e - x + (x / (x + X) * (a * (x + X) - (b * (x + (X ** 2)))))
 ]
 
 { #category : #control }

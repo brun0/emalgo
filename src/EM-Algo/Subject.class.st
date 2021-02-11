@@ -93,7 +93,7 @@ Subject >> tiq: anObject [
 
 { #category : #accessing }
 Subject >> tiqAt: aStratName put: anObject [
-	anObject <= 0 ifTrue: [ self halt ].
+	anObject < 0 ifTrue: [ self halt ].
 	tiq at: aStratName put: anObject
 ]
 
