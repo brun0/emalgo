@@ -1,24 +1,29 @@
 "
-Economic strategy
+̀EMStrategỳ is the abstract super-class of EM-algo for representing theoretical economic behaviours as utility function
 
-For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
+## Responsibility:
+I know and compute the production function of the economic game, telling how much the subject get according to what he plays and what the other players play.
 
-For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
+I provide abstract methods of utility computation in order for my subclasses to specify the theoretical behaviours.
 
-For the Collaborators Part: State my main collaborators and one line about how I interact with them. 
+## Collaborators: 
 
-Public API and Key Messages
+My subclasses to compute the production function.
 
-- message one   
-- message two 
-- (for bonus points) how to create instances.
+# Public API and Key Messages
 
-   One simple example is simply gorgeous.
- 
-Internal Representation and Key Implementation Points.
+- Production function:  `EMStrategy>>#whatIGet:when:` (Compute how much I get when I invest myContrib and the other of the group invest othersContrib)
 
 
-    Implementation Points
+- Utility function: `EMStrategy>>#utilityOf:when:withParameters:` (Abstract method for my sublcasses. Give the utility of a choice according to a each behaviour)
+
+
+## Example
+```
+""Compute how much I get when I invest 10 and the other of the group invest 30""
+self whatIGet: 10 when: 30
+```
+
 "
 Class {
 	#name : #EMStrategy,
@@ -32,54 +37,23 @@ Class {
 	#category : #'EM-Algo'
 }
 
-{ #category : #accessing }
-EMStrategy >> a [
-	^ a
-]
-
-{ #category : #accessing }
-EMStrategy >> a: anObject [
-	a := anObject
-]
-
-{ #category : #accessing }
-EMStrategy >> b [
-	^ b
-]
-
-{ #category : #accessing }
-EMStrategy >> b: anObject [
-	b := anObject
-]
-
-{ #category : #accessing }
-EMStrategy >> e [
-	^ e
-]
-
-{ #category : #accessing }
-EMStrategy >> e: anObject [
-	e := anObject
-]
-
 { #category : #'initailize-release' }
 EMStrategy >> init [
-
-self a: 23.
-self b: 0.25.
-self e: 25
+"Parameterizing the production function once and for all, it is the definition of the Economic problem"
+a:= 23.
+b:= 0.25.
+e:= 25
 ]
 
 { #category : #'initailize-release' }
 EMStrategy >> initialize [
 
-self a: 23.
-self b: 0.25.
-self e: 25
+	self init
 ]
 
 { #category : #accessing }
 EMStrategy >> pq [
+	"for subclasses: tells the probability that a random subject belong to this strategy"
 	^ pq
 ]
 
@@ -89,17 +63,34 @@ EMStrategy >> pq: anObject [
 ]
 
 { #category : #control }
-EMStrategy >> uMyContrib: x groupContrib: X [
+EMStrategy >> utilityOf: myContrib when: othersContrib withParameters: parameters [
+	self subclassResponsibility 
 
-	"basic utility function"
+]
 
-	^ e - x + (x / (x + X) * (a * (x + X) - (b * (x + (X ** 2)))))
+{ #category : #'as yet unclassified' }
+EMStrategy >> whatAnAverageOtherGet: myContrib when: othersContrib [
+	"Give the average gain of others in this situation. It is used by some 'other regarding preferences' strategies"
+	
+	| groupContrib anAverageOtherContrib averageOtherGain |
+	
+	groupContrib := myContrib + othersContrib.
+	anAverageOtherContrib := othersContrib / 7.
+	averageOtherGain := self whatIGet: anAverageOtherContrib when: groupContrib - anAverageOtherContrib.
+	^ averageOtherGain
 ]
 
 { #category : #control }
-EMStrategy >> utilityMyContrib: x_i groupContrib: xm_i param: parameters [
-	"comment stating purpose of instance-side message"
-	"scope: class-variables  &  instance-variables"	
-	self subclassResponsibility 
-
+EMStrategy >> whatIGet: myContrib when: othersContrib [
+	"Basic production function"
+	"Example below for basic parametrisation a = 23, b = 0.25 and e = 25"
+	"EMStrategy new whatIGet: 10 when: 50 >>> 95"
+	
+	| groupContrib |
+	groupContrib := myContrib + othersContrib.
+	
+	^ e "basic endowment"
+		- myContrib "what I put in the system"
+		+ ((myContrib / groupContrib) "My proportion of contribution"
+			* ((a * groupContrib) - (b * (groupContrib ** 2)))) "The whole group production"
 ]

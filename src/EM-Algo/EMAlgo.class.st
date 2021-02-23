@@ -122,7 +122,7 @@ dico := Dictionary new.
 			gain := 0.
 			self possibleXs do: [: x |
 				gain := gain + 
-				((strat utilityMyContrib: x groupContrib: xmi param: self psi) exp)].
+				((strat utilityOf: x when: xmi withParameters: self psi) exp)].
 			dicoS at: xmi put: gain].
 		dico at: strat class name put: dicoS].
 	self ds: dico
@@ -177,7 +177,7 @@ EMAlgo >> computeToursFqs [
 					t fq: Dictionary new.
 					self strategies
 						do: [ :strat | 
-							fqx := ((strat utilityMyContrib: t x_i groupContrib: t xm_i param: self psi) exp
+							fqx := ((strat utilityOf: t x_i when: t xm_i withParameters: self psi) exp
 										/ (self ds at: strat class name) at: t xm_i).
 							t fq
 								at: strat class name

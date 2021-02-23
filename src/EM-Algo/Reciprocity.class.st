@@ -5,17 +5,14 @@ Class {
 }
 
 { #category : #control }
-Reciprocity >> utilityMyContrib: x_i groupContrib: xm_i param: parameters [
-	"Basic utility function"
+Reciprocity >> utilityOf: myContrib when: othersContrib withParameters: parameters [
+	"Give the utility of investing myContrib in this situation"
 
 	| rho u |
 	rho := parameters rhoMoins negated.
-	x_i >= (xm_i / 7)
-		ifTrue: [ rho := parameters rhoPlus].
-	u := (self uMyContrib: x_i groupContrib: xm_i)
-		+
-			(rho * 7
-				*
-					(self uMyContrib: xm_i / 7 groupContrib: xm_i + x_i - (xm_i / 7))).
-	^ u / 100
+	myContrib >= (othersContrib / 7) ifTrue: [ rho := parameters rhoPlus ].
+	u := (self whatIGet: myContrib when: othersContrib)
+	     + (rho * 
+	self whatAnAverageOtherGet: myContrib when: othersContrib). "My monetary gain" "The averaged monetary gain of the others"
+	^ u
 ]

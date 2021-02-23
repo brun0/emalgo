@@ -5,10 +5,9 @@ Class {
 }
 
 { #category : #control }
-SelfInterst >> utilityMyContrib: x_i groupContrib: xm_i param: parameters [
-	"comment stating purpose of instance-side message"
-	"scope: class-variables  &  instance-variables"	
+SelfInterst >> utilityOf: myContrib when: othersContrib withParameters: parameters [
+	"Give the utility of investing myContrib in this situation"
 	| u |
-	u := self uMyContrib: x_i groupContrib: xm_i.
-	^ u / 100
+	u := self whatIGet: myContrib when: othersContrib.
+	^ u
 ]

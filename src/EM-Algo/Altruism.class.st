@@ -5,16 +5,13 @@ Class {
 }
 
 { #category : #control }
-Altruism >> utilityMyContrib: x_i groupContrib: xm_i param: parameters [
-	"comment stating purpose of instance-side message"
-
-	"scope: class-variables  &  instance-variables"
+Altruism >> utilityOf: myContrib when: othersContrib withParameters: parameters [
+	"Give the utility of investing myContrib in this situation"
 
 	| alpha u |
 	alpha := parameters alpha.
-	u := (self uMyContrib: x_i groupContrib: xm_i)
-		+
-			(alpha * 7
-				* (self uMyContrib: xm_i / 7 groupContrib: xm_i + x_i - (xm_i / 7))).
-	^ u / 100
+	u := (self whatIGet: myContrib when: othersContrib) "My monetary gain"
+		+ (alpha * 
+			self whatAnAverageOtherGet: myContrib when: othersContrib). "The averaged monetary gain of the others"
+	^ u
 ]
