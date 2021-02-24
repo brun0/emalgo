@@ -30,10 +30,12 @@ Class {
 		'psi',
 		'psiMax',
 		'ds',
-		'possibleXs',
 		'g',
 		'maximizer',
 		'rNG'
+	],
+	#classVars : [
+		'possibleContribs'
 	],
 	#category : #'EM-Algo'
 }
@@ -102,6 +104,18 @@ EMAlgo class >> exampleHill0 [
 	^maxim
 	"algo updatePqs.
 	^algo"
+]
+
+{ #category : #'initailize-release' }
+EMAlgo class >> initT1 [
+possibleContribs := OrderedCollection new.
+1 to: 25 do: [:i | self possibleContribs add: i ]
+]
+
+{ #category : #accessing }
+EMAlgo class >> possibleContribs [
+
+	^ possibleContribs
 ]
 
 { #category : #control }
@@ -256,12 +270,6 @@ self strategies do: [:s | s pq: 1 / nbStrat ].
 ]
 
 { #category : #'initailize-release' }
-EMAlgo >> initT1 [
-self possibleXs: OrderedCollection new.
-1 to: 25 do: [:i | self possibleXs add: i ]
-]
-
-{ #category : #'initailize-release' }
 EMAlgo >> intializeStrategies [
 | alt si rec|
 	alt := Altruism new.
@@ -290,16 +298,6 @@ EMAlgo >> population [
 { #category : #accessing }
 EMAlgo >> population: anObject [
 	population := anObject
-]
-
-{ #category : #accessing }
-EMAlgo >> possibleXs [
-	^ possibleXs
-]
-
-{ #category : #accessing }
-EMAlgo >> possibleXs: anObject [
-	possibleXs := anObject
 ]
 
 { #category : #accessing }

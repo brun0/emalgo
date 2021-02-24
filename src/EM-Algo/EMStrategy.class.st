@@ -17,6 +17,8 @@ My subclasses to compute the production function.
 
 - Utility function: `EMStrategy>>#utilityOf:when:withParameters:` (Abstract method for my sublcasses. Give the utility of a choice according to a each behaviour)
 
+- Computation of average gain of others: `EMStrategy>>#whatAnAverageOtherGet:when:`
+
 
 ## Example
 ```
@@ -63,12 +65,25 @@ EMStrategy >> pq: anObject [
 ]
 
 { #category : #control }
+EMStrategy >> probaOf: myContrib when: othersContrib withParameters: parameters [
+" Probability conditionnal on type q determined as a logit function "
+"TODO: Algo may be optimized by saving d only the first time it is computed for these parameters"
+ | choiceUtility d |
+
+	choiceUtility := self utilityOf: myContrib when: othersContrib withParameters: parameters.
+	d := (EMAlgo possibleContribs collect: [:potentialContrib |		 
+				(self utilityOf: potentialContrib when: othersContrib withParameters: parameters) exp.
+				]) sum.
+			^ (choiceUtility exp) / d
+]
+
+{ #category : #control }
 EMStrategy >> utilityOf: myContrib when: othersContrib withParameters: parameters [
 	self subclassResponsibility 
 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #control }
 EMStrategy >> whatAnAverageOtherGet: myContrib when: othersContrib [
 	"Give the average gain of others in this situation. It is used by some 'other regarding preferences' strategies"
 	
