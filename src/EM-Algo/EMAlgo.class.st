@@ -40,7 +40,7 @@ Class {
 	#category : #'EM-Algo'
 }
 
-{ #category : #examples }
+{ #category : #deprecated }
 EMAlgo class >> example0 [
 	"comment stating purpose of class-side message"
 
@@ -67,7 +67,7 @@ EMAlgo class >> example0 [
 	^algo"
 ]
 
-{ #category : #examples }
+{ #category : #deprecated }
 EMAlgo class >> example1 [
 	"comment stating purpose of class-side message"
 	
@@ -79,7 +79,7 @@ EMAlgo class >> example1 [
 	
 ]
 
-{ #category : #examples }
+{ #category : #deprecated }
 EMAlgo class >> exampleHill0 [
 	"comment stating purpose of class-side message"
 
@@ -104,6 +104,28 @@ EMAlgo class >> exampleHill0 [
 	^maxim
 	"algo updatePqs.
 	^algo"
+]
+
+{ #category : #examples }
+EMAlgo class >> exampleNiceCode1 [
+	"comment stating purpose of class-side message"
+
+	| algo maxim |
+	self class initT1.
+	algo := self new.
+	algo population: Population new.
+	algo population
+		loadDefaultFile;
+		generatePopulation.
+	algo init.
+	algo computeSubjectsProbasOfStrategies.
+	algo updateShares.
+	maxim := Maximizer new.
+	maxim algoIteration: algo.
+	algo maximizer: maxim.
+	maxim init.
+	maxim hillClimMaximizeParams.
+	^maxim
 ]
 
 { #category : #'initailize-release' }
@@ -157,6 +179,19 @@ EMAlgo >> computeG [
 						g:
 							self g + ((sub tiq at: strat class name)
 								* (strat pq log + ((fiq) log)))]]
+]
+
+{ #category : #control }
+EMAlgo >> computeSubjectsProbasOfStrategies [
+"Computes the Proba that each subejct belong to a strategy (a class) at a given iteration"
+
+self population subjects do: [ : sub |
+	self strategies do: [: strat |
+		sub setProbaToBelongTo: strat to: 
+		(sub probaToBelongTo: strat 
+			withParameters: self psi 
+			considering: self strategies) ]
+ ]
 ]
 
 { #category : #control }
@@ -253,9 +288,9 @@ self rNG: Random new.
 EMAlgo >> initParameters [
 "Strategies parameters"
 self psiMax: Parameters new.
-self psiMax alpha: 1/5.
-self psiMax rhoMoins: 1/5.
-self psiMax rhoPlus: 1/5.
+self psiMax alpha: 1/2.
+self psiMax rhoMoins: 1/2.
+self psiMax rhoPlus: 1/2.
 self psi: (self psiMax sur: 2).
 
 ]
@@ -349,4 +384,17 @@ EMAlgo >> updatePqs [
 self strategies do: [:strat |
 	tiqs := (self population subjects asOrderedCollection collect: [:sub | sub tiq at: strat class name ]). 
 	strat pq: (tiqs sumNumbers)  / (tiqs size)].
+]
+
+{ #category : #control }
+EMAlgo >> updateShares [
+	"Compute new values of pqs (shares of each class)"
+
+| indivProbasOfHavingAStrat denom |
+	denom := 0.
+	self strategies do: [:strat | denom := denom + (self population subjects asOrderedCollection collect: [:sub | sub getProbaToBelongTo: strat]) sum].
+
+self strategies do: [:strat |
+	indivProbasOfHavingAStrat := self population subjects asOrderedCollection collect: [:sub | sub getProbaToBelongTo: strat]. 
+	strat pq: (indivProbasOfHavingAStrat sumNumbers)  / denom].
 ]
