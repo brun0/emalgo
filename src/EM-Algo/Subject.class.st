@@ -8,7 +8,7 @@ Class {
 		'possibleXs',
 		'fiq',
 		'fi',
-		'tiq'
+		'probasToBelongToStrategies'
 	],
 	#category : #'EM-Algo'
 }
@@ -43,6 +43,12 @@ Subject >> fiq: anObject [
 Subject >> fiqAt: aStratName put: aValue [
 aValue <= 0 ifTrue: [ self halt].
 self fiq at: aStratName put: aValue
+]
+
+{ #category : #accessing }
+Subject >> getProbaToBelongTo: aStrategy [
+"get the proba of the last iteration"
+^ probasToBelongToStrategies at: aStrategy class name
 ]
 
 { #category : #accessing }
@@ -124,6 +130,14 @@ Subject >> session [
 { #category : #accessing }
 Subject >> session: anObject [
 	session := anObject
+]
+
+{ #category : #accessing }
+Subject >> setProbaToBelongTo: aStrategy to: aProbaValue [
+"get the proba computed of the last iteration"
+aProbaValue >= 1 ifTrue:[self halt].
+aProbaValue <= 0 ifTrue:[self halt].
+^ probasToBelongToStrategies at: aStrategy class name put: aProbaValue
 ]
 
 { #category : #accessing }
