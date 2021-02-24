@@ -22,8 +22,8 @@ Population >> createSubjectLabel: aString fromObs: anObs [
 Population >> createTour: anObs [
 	| tour |
 	tour := Tour new.
-	tour x_i: (anObs at: 'player.xi') asNumber.
-	tour xm_i: (anObs at: 'player.anticipation' ifAbsent: [  ^nil ]) asNumber.
+	tour contrib: (anObs at: 'player.xi') asNumber.
+	tour expectationOfOtherContrib: (anObs at: 'player.anticipation' ifAbsent: [  ^nil ]) asNumber.
 	tour nb: (anObs at: 'subsession.round_number' ifAbsent: [ ^nil ]) asNumber.
 	tour payoff: (anObs at: 'participant.payoff' ifAbsent: [ ^nil ]) asNumber.
 	^ tour

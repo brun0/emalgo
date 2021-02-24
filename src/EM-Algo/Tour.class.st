@@ -2,8 +2,8 @@ Class {
 	#name : #Tour,
 	#superclass : #Object,
 	#instVars : [
-		'x_i',
-		'xm_i',
+		'contrib',
+		'expectationOfOtherContrib',
 		'payoff',
 		'nb',
 		'subject',
@@ -11,6 +11,30 @@ Class {
 	],
 	#category : #'EM-Algo'
 }
+
+{ #category : #accessing }
+Tour >> contrib [
+
+	^ contrib
+]
+
+{ #category : #accessing }
+Tour >> contrib: anObject [
+
+	contrib := anObject
+]
+
+{ #category : #accessing }
+Tour >> expectationOfOtherContrib [
+
+	^ expectationOfOtherContrib
+]
+
+{ #category : #accessing }
+Tour >> expectationOfOtherContrib: anObject [
+
+	expectationOfOtherContrib := anObject
+]
 
 { #category : #accessing }
 Tour >> fq [
@@ -50,24 +74,4 @@ Tour >> subject [
 { #category : #accessing }
 Tour >> subject: anObject [
 	subject := anObject
-]
-
-{ #category : #accessing }
-Tour >> x_i [
-	^ x_i
-]
-
-{ #category : #accessing }
-Tour >> x_i: anObject [
-	x_i := anObject
-]
-
-{ #category : #accessing }
-Tour >> xm_i [
-	^ xm_i
-]
-
-{ #category : #accessing }
-Tour >> xm_i: anObject [
-	xm_i := anObject
 ]

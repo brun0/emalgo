@@ -71,6 +71,51 @@ Subject >> possibleXs: anObject [
 	possibleXs := anObject
 ]
 
+{ #category : #control }
+Subject >> probaOf: aStrategy withParameters: aParameters [
+	"Computes the probability taht the subject is of the class of the strategy conditionnaly to what he played"	
+	| p |
+	p := 1.
+	(self tours do: [: t | 
+		p *=
+		aStrategy probaOf: t contrib when: t expectationOfOtherContrib withParameters: aParameters]).
+	^p
+]
+
+{ #category : #control }
+Subject >> probaOfObsConditionallyTo: aStrategy withParameters: aParameters [
+	"Computes the probability of observations considering a given strategy"	
+	| p |
+	p := 1.
+	(self tours do: [: t | 
+		p *=
+		aStrategy probaOf: t contrib when: t expectationOfOtherContrib withParameters: aParameters]).
+	^p
+]
+
+{ #category : #control }
+Subject >> probaOfObsForAll: strategies withParameters: aParameters [
+	"Computes the probability of observations considering all strategies"	
+	
+	^ (strategies collect: [ :s | s pq * (self probaOfObsConditionallyTo: s withParameters: aParameters)]) sum.
+]
+
+{ #category : #control }
+Subject >> probaToBelongTo: aStrategy withParameters: aParameters considering: allStrategies [
+	"Computes the probability of a subject to belong to astragegy conditionnaly to what he played"	
+	^ aStrategy pq * 
+		(self probaOfObsConditionallyTo: aStrategy withParameters: aParameters) / 
+			(self probaOfObsForAll: allStrategies withParameters: aParameters)
+]
+
+{ #category : #control }
+Subject >> probaToBelongTo: aStrategy withParameters: aParameters consideringAll: strategies [
+	"Computes the probability of a subject to belong to astragegy conditionnaly to what he played"	
+	^ aStrategy pq * 
+		(self probaOfObsConditionallyTo: aStrategy withParameters: aParameters) / 
+			(self probaOfObsForAll: strategies withParameters: aParameters)
+]
+
 { #category : #accessing }
 Subject >> session [
 	^ session

@@ -126,7 +126,7 @@ EMAlgo >> computeDs [
 
 xmis:= Set new.
 self population subjects do: [: subj | subj tours 
-	do:[: tour | xmis add: tour xm_i] 
+	do:[: tour | xmis add: tour expectationOfOtherContrib ] 
 	].
 
 dico := Dictionary new.
@@ -186,13 +186,13 @@ EMAlgo >> computeToursFqs [
 			self strategies
 					do: [ :strat | 
 						s fiqAt: strat class name put: 1].
-			(s tours select: [: t | t x_i + (t xm_i) > 0])
+			(s tours select: [: t | t contrib + (t expectationOfOtherContrib) > 0])
 				do: [ :t | 
 					t fq: Dictionary new.
 					self strategies
 						do: [ :strat | 
-							fqx := ((strat utilityOf: t x_i when: t xm_i withParameters: self psi) exp
-										/ (self ds at: strat class name) at: t xm_i).
+							fqx := ((strat utilityOf: t contrib when: t expectationOfOtherContrib withParameters: self psi) exp
+										/ (self ds at: strat class name) at: t expectationOfOtherContrib ).
 							t fq
 								at: strat class name
 								put: fqx.
