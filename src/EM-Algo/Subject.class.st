@@ -107,6 +107,14 @@ Subject >> probaOfObsForAll: strategies withParameters: aParameters [
 ]
 
 { #category : #control }
+Subject >> probaOfOneObs: aTour ObsConditionallyTo: aStrategy withParameters: aParameters [
+	"Computes the probability of one observation considering a given strategy"
+
+		^ aStrategy probaOf: aTour contrib when: aTour expectationOfOtherContrib withParameters: aParameters.
+
+]
+
+{ #category : #control }
 Subject >> probaToBelongTo: aStrategy withParameters: aParameters considering: allStrategies [
 	"Computes the probability of a subject to belong to astragegy conditionnaly to what he played"	
 	^ aStrategy pq * 

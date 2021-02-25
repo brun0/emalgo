@@ -87,6 +87,38 @@ Maximizer >> grapher: anObject [
 ]
 
 { #category : #control }
+Maximizer >> hillClimMaximizeParameterOf: aStrategy [
+| fBlock educatedGuess hillClimber result |
+fBlock := [:v |
+    |a rM rP res|
+    a := ((v at: 1) max: 0).
+    rM := ((v at: 2) max: 0).
+	 rP := ((v at: 3) max: 0).
+	res := EMAlgo currentInstance 
+		logLikelyhoodTermOf: aStrategy 
+		withParameters: (Parameters new alpha: a; rhoMoins: rM; rhoPlus: rP).
+	a > 2 ifTrue:[res := 10000000 negated].
+	rM > 2 ifTrue:[res := 10000000 negated].
+	rP > 2 ifTrue:[ res := 10000000 negated].
+    res].
+
+	self candidateParameters do: [ :cParam |
+		cParam lastPoint: cParam copy.
+		educatedGuess := cParam.
+		hillClimber := PMHillClimbingOptimizer maximizingFunction: fBlock.
+		hillClimber initialValue: educatedGuess.
+		result := hillClimber evaluate.
+		cParam alpha: (result at:1);
+		rhoMoins: (result at:2);
+		rhoPlus: (result at:3).
+		].
+	
+
+
+
+]
+
+{ #category : #control }
 Maximizer >> hillClimMaximizeParams [
 | fBlock educatedGuess hillClimber result |
 fBlock := [:v |

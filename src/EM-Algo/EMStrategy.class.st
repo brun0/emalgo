@@ -34,7 +34,8 @@ Class {
 		'e',
 		'a',
 		'b',
-		'pq'
+		'pq',
+		'parameterEstimations'
 	],
 	#category : #'EM-Algo'
 }
@@ -51,6 +52,19 @@ e:= 25
 EMStrategy >> initialize [
 
 	self init
+]
+
+{ #category : #accessing }
+EMStrategy >> parameterEstimations [
+	"Estimations of the paramter found by the maximizer at last iteration"
+	"For controling the algo processing"
+	^ parameterEstimations
+]
+
+{ #category : #accessing }
+EMStrategy >> parameterEstimations: anObject [
+
+	parameterEstimations := anObject
 ]
 
 { #category : #accessing }

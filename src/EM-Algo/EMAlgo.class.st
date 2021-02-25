@@ -35,10 +35,44 @@ Class {
 		'rNG'
 	],
 	#classVars : [
+		'currentInstance',
 		'possibleContribs'
 	],
 	#category : #'EM-Algo'
 }
+
+{ #category : #accessing }
+EMAlgo class >> currentInstance [
+"Nessessary for using polymath optimizer (Maximizer class)"
+^ currentInstance 
+]
+
+{ #category : #accessing }
+EMAlgo class >> currentInstance: anObject [
+
+	currentInstance := anObject
+]
+
+{ #category : #examples }
+EMAlgo class >> example [
+	"Example with the new version of algorithm"
+
+	| algo |
+	self class initT1.
+	algo := self new.
+	algo population: Population new.
+	algo population
+		loadDefaultFile;
+		generatePopulation.
+	algo init.
+	algo computeSubjectsProbasOfStrategies.
+	algo updateShares.
+	algo estimateParameters.
+	1 to: 10 do: [: i |
+		algo computeSubjectsProbasOfStrategies.
+		algo updateShares.
+		algo estimateParameters].
+]
 
 { #category : #deprecated }
 EMAlgo class >> example0 [
@@ -106,28 +140,6 @@ EMAlgo class >> exampleHill0 [
 	^algo"
 ]
 
-{ #category : #examples }
-EMAlgo class >> exampleNiceCode1 [
-	"comment stating purpose of class-side message"
-
-	| algo maxim |
-	self class initT1.
-	algo := self new.
-	algo population: Population new.
-	algo population
-		loadDefaultFile;
-		generatePopulation.
-	algo init.
-	algo computeSubjectsProbasOfStrategies.
-	algo updateShares.
-	maxim := Maximizer new.
-	maxim algoIteration: algo.
-	algo maximizer: maxim.
-	maxim init.
-	maxim hillClimMaximizeParams.
-	^maxim
-]
-
 { #category : #'initailize-release' }
 EMAlgo class >> initT1 [
 possibleContribs := OrderedCollection new.
@@ -140,7 +152,7 @@ EMAlgo class >> possibleContribs [
 	^ possibleContribs
 ]
 
-{ #category : #control }
+{ #category : #obsolete }
 EMAlgo >> computeDs [
 "For optimisation purposes we compute this table only once"
 "Find all usefull anticipations"
@@ -165,7 +177,7 @@ dico := Dictionary new.
 
 ]
 
-{ #category : #control }
+{ #category : #obsolete }
 EMAlgo >> computeG [
 	| fiq |
 	self g: 0.
@@ -182,6 +194,12 @@ EMAlgo >> computeG [
 ]
 
 { #category : #control }
+EMAlgo >> computeLogLikelyhood [
+
+	self sub
+]
+
+{ #category : #control }
 EMAlgo >> computeSubjectsProbasOfStrategies [
 "Computes the Proba that each subejct belong to a strategy (a class) at a given iteration"
 
@@ -194,7 +212,7 @@ self population subjects do: [ : sub |
  ]
 ]
 
-{ #category : #control }
+{ #category : #obsolete }
 EMAlgo >> computeTiq [
 "Proba d'appartenance au type q de l'individu i à cette itération"
 	| denom |
@@ -209,7 +227,7 @@ self population subjects do: [ : sub |
  ]
 ]
 
-{ #category : #control }
+{ #category : #obsolete }
 EMAlgo >> computeToursFqs [
 	"Compute fq for each turn "
 
@@ -266,6 +284,20 @@ EMAlgo >> ds: anObject [
 	ds := anObject
 ]
 
+{ #category : #control }
+EMAlgo >> estimateParameters [
+
+| maxim |
+self strategies do: [: strat |
+		maxim := Maximizer new.
+		maxim algoIteration: self.
+		self maximizer: maxim.
+		maxim init.
+		maxim hillClimMaximizeParameterOf: strat.
+		strat parameterEstimations: maxim candidateParameters.
+	].
+]
+
 { #category : #accessing }
 EMAlgo >> g [
 	^ g
@@ -305,6 +337,11 @@ self strategies do: [:s | s pq: 1 / nbStrat ].
 ]
 
 { #category : #'initailize-release' }
+EMAlgo >> intialize [
+self class currentInstance: self.
+]
+
+{ #category : #'initailize-release' }
 EMAlgo >> intializeStrategies [
 | alt si rec|
 	alt := Altruism new.
@@ -313,6 +350,23 @@ EMAlgo >> intializeStrategies [
 	self strategies add: alt.
 	self strategies add: si.
 	self strategies add: rec.
+]
+
+{ #category : #control }
+EMAlgo >> logLikelyhoodTermOf: aStrategy [
+
+	self population subjects collect: [: subject |
+		subject tours collect: [: t | ]].
+]
+
+{ #category : #control }
+EMAlgo >> logLikelyhoodTermOf: aStrategy withParameters: aParameters [
+
+	^ (self population subjects collect: [: subject |
+		(subject tours collect: [: t | (subject getProbaToBelongTo: aStrategy) * 
+			(subject probaOfOneObs: t
+				ObsConditionallyTo: aStrategy 
+					withParameters: aParameters)]) sum]) sum.
 ]
 
 { #category : #accessing }
@@ -376,7 +430,7 @@ EMAlgo >> strategies: anObject [
 	strategies := anObject
 ]
 
-{ #category : #control }
+{ #category : #obsolete }
 EMAlgo >> updatePqs [
 	"Compute new values of pqs"	
 
