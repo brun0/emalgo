@@ -117,7 +117,7 @@ EMStrategy >> whatIGet: myContrib when: othersContrib [
 	
 	| groupContrib |
 	groupContrib := myContrib + othersContrib.
-	
+	myContrib = 0 ifTrue: [^e].
 	^ e "basic endowment"
 		- myContrib "what I put in the system"
 		+ ((myContrib / groupContrib) "My proportion of contribution"

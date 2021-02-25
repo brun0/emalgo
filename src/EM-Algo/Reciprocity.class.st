@@ -13,6 +13,6 @@ Reciprocity >> utilityOf: myContrib when: othersContrib withParameters: paramete
 	myContrib >= (othersContrib / 7) ifTrue: [ rho := parameters rhoPlus ].
 	u := (self whatIGet: myContrib when: othersContrib)
 	     + (rho * 
-	self whatAnAverageOtherGet: myContrib when: othersContrib). "My monetary gain" "The averaged monetary gain of the others"
+	(self whatAnAverageOtherGet: myContrib when: othersContrib)). "My monetary gain" "The averaged monetary gain of the others"
 	^ u
 ]

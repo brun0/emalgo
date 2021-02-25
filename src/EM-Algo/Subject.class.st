@@ -62,6 +62,11 @@ Subject >> id: anObject [
 ]
 
 { #category : #init }
+Subject >> init [
+probasToBelongToStrategies := Dictionary new.
+]
+
+{ #category : #init }
 Subject >> initT1 [
 self possibleXs: OrderedCollection new.
 1 to: 25 do: [:i | self possibleXs add: i ]
@@ -94,8 +99,8 @@ Subject >> probaOfObsConditionallyTo: aStrategy withParameters: aParameters [
 	| p |
 	p := 1.
 	(self tours do: [: t | 
-		p *=
-		aStrategy probaOf: t contrib when: t expectationOfOtherContrib withParameters: aParameters]).
+		p := p * 
+			(aStrategy probaOf: t contrib when: t expectationOfOtherContrib withParameters: aParameters)]).
 	^p
 ]
 

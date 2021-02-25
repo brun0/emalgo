@@ -15,6 +15,7 @@ Population >> createSubjectLabel: aString fromObs: anObs [
 		self subjects at: aString put: s.
 		s id: anObs.
 		s session: (anObs at: 'session.code').
+		s init.
 		^s
 ]
 

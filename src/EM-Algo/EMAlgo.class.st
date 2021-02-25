@@ -58,13 +58,14 @@ EMAlgo class >> example [
 	"Example with the new version of algorithm"
 
 	| algo |
-	self class initT1.
+	self initT1.
 	algo := self new.
 	algo population: Population new.
 	algo population
 		loadDefaultFile;
 		generatePopulation.
 	algo init.
+	algo initPq.
 	algo computeSubjectsProbasOfStrategies.
 	algo updateShares.
 	algo estimateParameters.
