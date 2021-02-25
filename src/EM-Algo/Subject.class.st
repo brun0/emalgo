@@ -148,8 +148,8 @@ Subject >> session: anObject [
 { #category : #accessing }
 Subject >> setProbaToBelongTo: aStrategy to: aProbaValue [
 "get the proba computed of the last iteration"
-aProbaValue >= 1 ifTrue:[self halt].
-aProbaValue <= 0 ifTrue:[self halt].
+aProbaValue > 1 ifTrue:[self halt].
+aProbaValue < 0 ifTrue:[self halt].
 ^ probasToBelongToStrategies at: aStrategy class name put: aProbaValue
 ]
 

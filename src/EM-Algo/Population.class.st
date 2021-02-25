@@ -27,6 +27,7 @@ Population >> createTour: anObs [
 	tour expectationOfOtherContrib: (anObs at: 'player.anticipation' ifAbsent: [  ^nil ]) asNumber.
 	tour nb: (anObs at: 'subsession.round_number' ifAbsent: [ ^nil ]) asNumber.
 	tour payoff: (anObs at: 'participant.payoff' ifAbsent: [ ^nil ]) asNumber.
+	(tour contrib == 0 and: [ tour expectationOfOtherContrib == 0 ]) ifTrue: [^ nil].
 	^ tour
 ]
 
@@ -55,7 +56,8 @@ Population >> generatePopulation [
 				ifTrue: [ subject := self subjects at: label.
 					t := self createTour: obs.
 					t ifNotNil: [ subject addTour: t.
-							t subject: subject ] ] ]
+							t subject: subject ] ] ].
+				self subjects keysAndValuesRemove: [:key :sub | sub tours isEmpty ]
 ]
 
 { #category : #initalize }
@@ -65,7 +67,7 @@ Population >> loadDataFile: aFileRef [
 	| reader |
 	reader := (NeoCSVReader on: aFileRef readStream) separator: $;.
 	reader namedColumnsConfiguration.
-	self data: reader upToEnd
+	self data: reader upToEnd.
 ]
 
 { #category : #initalize }
