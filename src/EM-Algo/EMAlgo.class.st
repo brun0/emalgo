@@ -60,11 +60,11 @@ EMAlgo class >> example [
 	| algo |
 	self initT1.
 	algo := self new.
-	algo population: Population new.
-	algo population
-		loadDefaultFile;
-		generatePopulation.
 	algo init.
+	algo population: Population new.
+	algo population 
+		generateSyntheticPopOf: algo strategies 
+		withParameters: (Parameters new alpha: 0.7; rhoMoins: 0.1; rhoPlus: 0.4).
 	algo initPq.
 	algo computeSubjectsProbasOfStrategies.
 	algo updateShares.
@@ -321,9 +321,9 @@ self rNG: Random new.
 EMAlgo >> initParameters [
 "Strategies parameters"
 self psiMax: Parameters new.
-self psiMax alpha: 1/2.
-self psiMax rhoMoins: 1/2.
-self psiMax rhoPlus: 1/2.
+self psiMax alpha: 1.
+self psiMax rhoMoins: 1.
+self psiMax rhoPlus: 1.
 self psi: (self psiMax sur: 2).
 
 ]

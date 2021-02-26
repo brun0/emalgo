@@ -3,7 +3,8 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'subjects',
-		'data'
+		'data',
+		'rGN'
 	],
 	#category : #'EM-Algo'
 }
@@ -58,6 +59,22 @@ Population >> generatePopulation [
 					t ifNotNil: [ subject addTour: t.
 							t subject: subject ] ] ].
 				self subjects keysAndValuesRemove: [:key :sub | sub tours isEmpty ]
+]
+
+{ #category : #initalize }
+Population >> generateSyntheticPopOf: strategies withParameters: aParameters [ 
+	| subject tour |
+	rGN := Random new.
+	strategies do: [: aStrat |
+		1 to: 15 do: [: i |
+			subject := Subject new.
+			self subjects at: (aStrat class name , '_', i asString) put: subject].
+			1 to: 20 do: [:tn | tour := Tour new.
+			tour expectationOfOtherContrib: EMAlgo possibleContribs atRandom.
+			tour contrib: (aStrat bestChoiceWhen: tour expectationOfOtherContrib whenParameters: aParameters) + ((rGN next) * 10).
+			tour nb: tn.
+			 ]
+		 ]
 ]
 
 { #category : #initalize }

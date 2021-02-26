@@ -40,6 +40,19 @@ Class {
 	#category : #'EM-Algo'
 }
 
+{ #category : #control }
+EMStrategy >> bestChoiceWhen: othersContrib whenParameters: aParameters [
+	| contribChoice bestUtil contribUtil |
+	contribChoice := EMAlgo possibleContribs first.
+	bestUtil := self utilityOf: contribChoice when: othersContrib  withParameters: aParameters.
+	EMAlgo possibleContribs do: [:contrib | 
+		contribUtil  := self utilityOf: contrib when: othersContrib  withParameters: aParameters.
+		(contribUtil > bestUtil)
+		ifTrue: [ bestUtil := contribUtil. 
+			contribChoice := contrib] ].
+	^ contribChoice
+]
+
 { #category : #'initailize-release' }
 EMStrategy >> init [
 "Parameterizing the production function once and for all, it is the definition of the Economic problem"
