@@ -173,9 +173,9 @@ Maximizer >> init [
 							para alpha: a + ((self algoIteration rNG next) * da).
 							para rhoMoins: rM + ((self algoIteration rNG next) * drM).
 							para rhoPlus: rP + ((self algoIteration rNG next) * drP).
-							para vraisemb: (self computeVraisemblance: para).
+							"para vraisemb: (self computeVraisemblance: para)".
 							self candidateParameters add: para ] ] ].
-				self show ifTrue: [ ^ self initVisualization3D ].
+				"self show ifTrue: [ ^ self initVisualization3D ]".
 ]
 
 { #category : #'initailize-release' }

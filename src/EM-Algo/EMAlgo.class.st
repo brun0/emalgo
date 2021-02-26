@@ -60,8 +60,10 @@ EMAlgo class >> example [
 	| algo |
 	self initT1.
 	algo := self new.
+	EMAlgo currentInstance: algo.
 	algo init.
 	algo population: Population new.
+	algo population rGN: algo rNG.
 	algo population 
 		generateSyntheticPopOf: algo strategies 
 		withParameters: (Parameters new alpha: 0.7; rhoMoins: 0.1; rhoPlus: 0.4).

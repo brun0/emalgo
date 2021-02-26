@@ -18,28 +18,28 @@ Subject >> addTour: aTour [
 self tours add: aTour
 ]
 
-{ #category : #accessing }
+{ #category : #deprecated }
 Subject >> fi [
 	^ fi
 ]
 
-{ #category : #accessing }
+{ #category : #deprecated }
 Subject >> fi: anObject [
 anObject < 0 ifTrue: [ self halt ].
 	fi := anObject
 ]
 
-{ #category : #accessing }
+{ #category : #deprecated }
 Subject >> fiq [
 	^ fiq
 ]
 
-{ #category : #accessing }
+{ #category : #deprecated }
 Subject >> fiq: anObject [
 	fiq := anObject
 ]
 
-{ #category : #accessing }
+{ #category : #deprecated }
 Subject >> fiqAt: aStratName put: aValue [
 aValue <= 0 ifTrue: [ self halt].
 self fiq at: aStratName put: aValue
@@ -64,6 +64,7 @@ Subject >> id: anObject [
 { #category : #init }
 Subject >> init [
 probasToBelongToStrategies := Dictionary new.
+self tours: OrderedCollection new.
 ]
 
 { #category : #init }
@@ -72,12 +73,12 @@ self possibleXs: OrderedCollection new.
 1 to: 25 do: [:i | self possibleXs add: i ]
 ]
 
-{ #category : #accessing }
+{ #category : #deprecated }
 Subject >> possibleXs [
 	^ possibleXs
 ]
 
-{ #category : #accessing }
+{ #category : #deprecated }
 Subject >> possibleXs: anObject [
 	possibleXs := anObject
 ]
@@ -153,17 +154,17 @@ aProbaValue < 0 ifTrue:[self halt].
 ^ probasToBelongToStrategies at: aStrategy class name put: aProbaValue
 ]
 
-{ #category : #accessing }
+{ #category : #deprecated }
 Subject >> tiq [
 	^ tiq
 ]
 
-{ #category : #accessing }
+{ #category : #deprecated }
 Subject >> tiq: anObject [
 	tiq := anObject
 ]
 
-{ #category : #accessing }
+{ #category : #deprecated }
 Subject >> tiqAt: aStratName put: anObject [
 	anObject < 0 ifTrue: [ self halt ].
 	tiq at: aStratName put: anObject
