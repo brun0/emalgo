@@ -8,7 +8,8 @@ Class {
 		'possibleXs',
 		'fiq',
 		'fi',
-		'probasToBelongToStrategies'
+		'probasToBelongToStrategies',
+		'label'
 	],
 	#category : #'EM-Algo'
 }
@@ -71,6 +72,18 @@ self tours: OrderedCollection new.
 Subject >> initT1 [
 self possibleXs: OrderedCollection new.
 1 to: 25 do: [:i | self possibleXs add: i ]
+]
+
+{ #category : #accessing }
+Subject >> label [
+ label ifNil: [^ 'no label' ].
+	^ label
+]
+
+{ #category : #accessing }
+Subject >> label: anObject [
+
+	label := anObject
 ]
 
 { #category : #deprecated }
@@ -152,6 +165,21 @@ Subject >> setProbaToBelongTo: aStrategy to: aProbaValue [
 aProbaValue > 1 ifTrue:[self halt].
 aProbaValue < 0 ifTrue:[self halt].
 ^ probasToBelongToStrategies at: aStrategy class name put: aProbaValue
+]
+
+{ #category : #visualization }
+Subject >> show [
+	| classes c p |
+	c := RSChart new.
+	p := RSScatterPlot new x: (self tours collect: [:t | t expectationOfOtherContrib]) y: (self tours collect: [:t | t contrib]).
+	c addPlot: p.
+	
+	c xlabel: 'Other contrib'.
+	c ylabel: 'My Contrib'.
+	c title: 'Game of:', self label.
+	c addDecoration: RSHorizontalTick new integer;
+		addDecoration: RSVerticalTick new integer.
+	^ c
 ]
 
 { #category : #deprecated }

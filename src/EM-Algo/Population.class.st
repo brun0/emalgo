@@ -70,9 +70,10 @@ Population >> generateSyntheticPopOf: strategies withParameters: aParameters [
 		1 to: 15 do: [: i |
 			subject := Subject new.
 			subject init.
-			self subjects at: (aStrat class name , '_', i asString) put: subject.
+			subject label: (aStrat class name , '_', i asString).
+			self subjects at: subject label put: subject.
 			1 to: 20 do: [:tn | tour := Tour new.
-			tour expectationOfOtherContrib: EMAlgo possibleContribs atRandom.
+			tour expectationOfOtherContrib: (EMAlgo possibleContribs atRandom) * 7 .
 			tour contrib: (aStrat bestChoiceWhen: tour expectationOfOtherContrib whenParameters: aParameters) + ((rGN next) * 2). "We should use a normal error distribution"
 			tour nb: tn.
 			subject addTour: tour.

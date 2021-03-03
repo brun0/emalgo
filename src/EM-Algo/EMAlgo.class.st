@@ -32,7 +32,8 @@ Class {
 		'ds',
 		'g',
 		'maximizer',
-		'rNG'
+		'rNG',
+		'parametersEvolution'
 	],
 	#classVars : [
 		'currentInstance',
@@ -70,11 +71,12 @@ EMAlgo class >> example [
 	algo initPq.
 	algo computeSubjectsProbasOfStrategies.
 	algo updateShares.
-	algo estimateParameters.
+	algo estimateParametersSimply.
 	1 to: 10 do: [: i |
 		algo computeSubjectsProbasOfStrategies.
 		algo updateShares.
-		algo estimateParameters].
+		algo estimateParametersSimply].
+	^ algo
 ]
 
 { #category : #deprecated }
@@ -287,6 +289,37 @@ EMAlgo >> ds: anObject [
 	ds := anObject
 ]
 
+{ #category : #'as yet unclassified' }
+EMAlgo >> estimateAltruismParameter [
+
+| step nbStep candidates scores bestScore bestA strat|
+
+strat := self strategies detect: [: s| s class = Altruism  ].
+nbStep := 10.
+bestA := self psiMax alpha.
+step := (self psiMax alpha) / nbStep.
+candidates := OrderedCollection new.
+scores := Dictionary new.
+bestScore := 100000 negated.
+1 to: nbStep do: [:i |
+	candidates add: i * step].
+candidates do: [:alpha |  
+	| score |
+	score := EMAlgo currentInstance 
+		logLikelyhoodTermOf: strat 
+		withParameters: (Parameters new alpha: alpha).
+		scores at: alpha put: score.
+	score > bestScore ifTrue: [ 
+		bestScore := score. 
+		bestA := alpha ]
+	].
+^ bestA
+
+
+
+
+]
+
 { #category : #control }
 EMAlgo >> estimateParameters [
 
@@ -299,6 +332,51 @@ self strategies do: [: strat |
 		maxim hillClimMaximizeParameterOf: strat.
 		strat parameterEstimations: maxim candidateParameters.
 	].
+]
+
+{ #category : #control }
+EMAlgo >> estimateParametersSimply [
+
+| rhos |
+
+parametersEvolution add: self psi copy.
+self psi alpha: self estimateAltruismParameter.
+rhos := self estimateReciprocityParameters.
+self psi rhoMoins: rhos x.
+self psi rhoPlus: rhos y.
+]
+
+{ #category : #'as yet unclassified' }
+EMAlgo >> estimateReciprocityParameters [
+
+| step nbStep candidates scores bestScore strat bestRMP |
+
+strat := self strategies detect: [: s| s class = Reciprocity  ].
+nbStep := 10.
+bestRMP := (self psiMax rhoMoins) @ (self psiMax rhoPlus).
+step := (self psiMax rhoMoins) / nbStep.
+candidates := OrderedCollection new.
+scores := Dictionary new.
+bestScore := 100000 negated.
+1 to: nbStep do: [:i |
+	1 to: nbStep do: [:j |
+	candidates add: (i * step) @ (j * step)
+	]].
+candidates do: [:rMP |  
+	| score |
+	score := EMAlgo currentInstance 
+		logLikelyhoodTermOf: strat 
+		withParameters: (Parameters new rhoMoins: rMP x; rhoPlus: rMP y).
+		scores at: rMP put: score.
+	score > bestScore ifTrue: [ 
+		bestScore := score. 
+		bestRMP := rMP ]
+	].
+^ bestRMP
+
+
+
+
 ]
 
 { #category : #accessing }
@@ -315,6 +393,7 @@ EMAlgo >> g: anObject [
 EMAlgo >> init [
 self intializeStrategies.
 self initParameters.
+parametersEvolution := OrderedCollection new.
 self rNG: Random new.
 
 ]
@@ -367,9 +446,9 @@ EMAlgo >> logLikelyhoodTermOf: aStrategy withParameters: aParameters [
 
 	^ (self population subjects collect: [: subject |
 		(subject tours collect: [: t | (subject getProbaToBelongTo: aStrategy) * 
-			(subject probaOfOneObs: t
+			((subject probaOfOneObs: t
 				ObsConditionallyTo: aStrategy 
-					withParameters: aParameters)]) sum]) sum.
+					withParameters: aParameters) log)]) sum]) sum.
 ]
 
 { #category : #accessing }
