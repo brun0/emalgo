@@ -67,7 +67,7 @@ EMAlgo class >> example [
 	algo population rGN: algo rNG.
 	algo population 
 		generateSyntheticPopOf: algo strategies 
-		withParameters: (Parameters new alpha: 5; rhoMoins: 5; rhoPlus: 5).
+		withParameters: (Parameters new alpha: 0.8; rhoMoins: 0.8; rhoPlus: 0.8).
 	algo initPq.
 	algo computeSubjectsProbasOfStrategies.
 	algo updateShares.
@@ -402,9 +402,9 @@ self rNG: Random new.
 EMAlgo >> initParameters [
 "Strategies parameters"
 self psiMax: Parameters new.
-self psiMax alpha: 7.
-self psiMax rhoMoins: 7.
-self psiMax rhoPlus: 7.
+self psiMax alpha: 0.999999.
+self psiMax rhoMoins: 0.99999.
+self psiMax rhoPlus: 0.999999.
 self psi: (self psiMax sur: 2).
 
 ]
