@@ -67,7 +67,7 @@ EMAlgo class >> example [
 	algo population rGN: algo rNG.
 	algo population 
 		generateSyntheticPopOf: algo strategies 
-		withParameters: (Parameters new alpha: 0.7; rhoMoins: 0.1; rhoPlus: 0.4).
+		withParameters: (Parameters new alpha: 5; rhoMoins: 5; rhoPlus: 5).
 	algo initPq.
 	algo computeSubjectsProbasOfStrategies.
 	algo updateShares.
@@ -295,7 +295,7 @@ EMAlgo >> estimateAltruismParameter [
 | step nbStep candidates scores bestScore bestA strat|
 
 strat := self strategies detect: [: s| s class = Altruism  ].
-nbStep := 10.
+nbStep := 20.
 bestA := self psiMax alpha.
 step := (self psiMax alpha) / nbStep.
 candidates := OrderedCollection new.
@@ -352,7 +352,7 @@ EMAlgo >> estimateReciprocityParameters [
 | step nbStep candidates scores bestScore strat bestRMP |
 
 strat := self strategies detect: [: s| s class = Reciprocity  ].
-nbStep := 10.
+nbStep := 20.
 bestRMP := (self psiMax rhoMoins) @ (self psiMax rhoPlus).
 step := (self psiMax rhoMoins) / nbStep.
 candidates := OrderedCollection new.
@@ -402,9 +402,9 @@ self rNG: Random new.
 EMAlgo >> initParameters [
 "Strategies parameters"
 self psiMax: Parameters new.
-self psiMax alpha: 1.
-self psiMax rhoMoins: 1.
-self psiMax rhoPlus: 1.
+self psiMax alpha: 7.
+self psiMax rhoMoins: 7.
+self psiMax rhoPlus: 7.
 self psi: (self psiMax sur: 2).
 
 ]

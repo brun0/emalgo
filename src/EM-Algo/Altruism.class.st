@@ -10,7 +10,7 @@ Altruism >> utilityOf: myContrib when: othersContrib withParameters: parameters 
 
 	| alpha u |
 	alpha := parameters alpha.
-	u := (self whatIGet: myContrib when: othersContrib) "My monetary gain"
+	u := ((1 - alpha) *(self whatIGet: myContrib when: othersContrib)) "My monetary gain"
 		+ (alpha * 
 			(self whatAnAverageOtherGet: myContrib when: othersContrib)). "The averaged monetary gain of the others"
 	^ u

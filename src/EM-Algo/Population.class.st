@@ -64,7 +64,7 @@ Population >> generatePopulation [
 { #category : #initalize }
 Population >> generateSyntheticPopOf: strategies withParameters: aParameters [ 
 "Generate subjects of all strategies with noise"
-" |strats| strats := OrderedCollection new. strats add: Altruism new. strats add: Reciprocity new. Population new generateSyntheticPopOf: strats withParameters: (Parameters new alpha: 5; rhoMoins: 5;rhoPlus:5) >>> 'the population to be inspected' "
+" |strats| strats := OrderedCollection new. strats add: Altruism new. strats add: Reciprocity new. Population new generateSyntheticPopOf: strats withParameters: (Parameters new alpha: 0.7; rhoMoins: 0.7;rhoPlus:0.7) >>> 'the population to be inspected' "
 
 	| subject tour normalError |
 	normalError := PMNormalDistribution new.
