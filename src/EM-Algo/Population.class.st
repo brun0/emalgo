@@ -63,8 +63,11 @@ Population >> generatePopulation [
 
 { #category : #initalize }
 Population >> generateSyntheticPopOf: strategies withParameters: aParameters [ 
-"See comment in the method for things to improve"
-	| subject tour |
+"Generate subjects of all strategies with noise"
+" |strats| strats := OrderedCollection new. strats add: Altruism new. strats add: Reciprocity new. Population new generateSyntheticPopOf: strats withParameters: (Parameters new alpha: 5; rhoMoins: 5;rhoPlus:5) >>> 'the population to be inspected' "
+
+	| subject tour normalError |
+	normalError := PMNormalDistribution new.
 	self subjects: Dictionary new.
 	strategies do: [: aStrat |
 		1 to: 15 do: [: i |
@@ -74,7 +77,7 @@ Population >> generateSyntheticPopOf: strategies withParameters: aParameters [
 			self subjects at: subject label put: subject.
 			1 to: 20 do: [:tn | tour := Tour new.
 			tour expectationOfOtherContrib: (EMAlgo possibleContribs atRandom) * 7 .
-			tour contrib: (aStrat bestChoiceWhen: tour expectationOfOtherContrib whenParameters: aParameters) + ((rGN next) * 2). "We should use a normal error distribution"
+			tour contrib: (aStrat bestChoiceWhen: tour expectationOfOtherContrib whenParameters: aParameters) + (normalError random).
 			tour nb: tn.
 			subject addTour: tour.
 			 ]]
