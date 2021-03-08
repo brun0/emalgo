@@ -69,7 +69,7 @@ EMAlgo class >> example [
 		generateSyntheticPopOf: algo strategies 
 		withParameters: (Parameters new alpha: 0.8; rhoMoins: 0.8; rhoPlus: 0.8).
 	algo initPq.
-	algo computeSubjectsProbasOfStrategies.
+	algo initSubjectsProbasOfStrategies.
 	algo updateShares.
 	algo estimateParametersSimply.
 	1 to: 10 do: [: i |
@@ -416,6 +416,16 @@ EMAlgo >> initPq [
 nbStrat := self strategies size.
 self strategies do: [:s | s pq: 1 / nbStrat ].
 
+]
+
+{ #category : #'initailize-release' }
+EMAlgo >> initSubjectsProbasOfStrategies [
+"Computes the Proba that each subejct belong to a strategy (a class) at a given iteration"
+self population subjects do: [ : sub |
+	self strategies do: [: strat |
+		sub setProbaToBelongTo: strat to: 0.01 ].
+	sub setProbaToBelongTo: self strategies atRandom to: (1 - (0.01 * (self strategies size - 1)))
+ ]
 ]
 
 { #category : #'initailize-release' }

@@ -56,8 +56,8 @@ EMStrategy >> bestChoiceWhen: othersContrib whenParameters: aParameters [
 { #category : #'initailize-release' }
 EMStrategy >> init [
 "Parameterizing the production function once and for all, it is the definition of the Economic problem"
-a:= 23.
-b:= 0.25.
+a:= 0.23.
+b:= 0.0025.
 e:= 25
 ]
 
@@ -131,8 +131,8 @@ EMStrategy >> whatIGet: myContrib when: othersContrib [
 	| groupContrib |
 	groupContrib := myContrib + othersContrib.
 	myContrib = 0 ifTrue: [^e].
-	^ e "basic endowment"
-		- myContrib "what I put in the system"
+	^ ((e "basic endowment"
+		- myContrib) * 0.01) "what I put in the system"
 		+ ((myContrib / groupContrib) "My proportion of contribution"
 			* ((a * groupContrib) - (b * (groupContrib ** 2)))) "The whole group production"
 ]
