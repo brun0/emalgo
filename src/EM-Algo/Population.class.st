@@ -113,6 +113,58 @@ Population >> rGN: anObject [
 	rGN := anObject
 ]
 
+{ #category : #visualization }
+Population >> showSampleOf8Subjects [
+"a Population"
+	| b c sub n colors col |
+	n := 8.
+	c := RSChart new.
+	b := RSLegend new.	
+	b container: c canvas.
+	b title: 'Subjects labels'.
+	colors := RSColorPalette qualitative accent8.
+	col := 0.
+	n timesRepeat: [ 
+		col := col +1 .
+	sub := self subjects keys atRandom.
+	(self subjects at: sub) displayOn: c in: (colors scale: col).
+	b text: sub withCircleColor: (colors scale: col).
+	].
+	c xlabel: 'Other contrib'.
+	c ylabel: 'My Contrib'.
+	c title: 'Game of ', (n asString) , ' subjects'.
+	c addDecoration: RSHorizontalTick new integer;
+		addDecoration: RSVerticalTick new integer.
+	b legendDo: [ :l |
+		l
+			withBorder;
+			padding: 20;
+			scaleBy: 0.5].
+	b location 
+		inner; bottom; right; offset: -10.
+	b build.
+	c show.
+]
+
+{ #category : #visualization }
+Population >> showSampleOf: nBSubjects [
+"a Population"
+	| c sub n colors |
+	n := nBSubjects.
+	c := RSChart new.
+	colors := RSColorPalette qualitative accent8.
+	n timesRepeat: [ 
+	sub := self subjects keys atRandom.
+	(self subjects at: sub) displayOn: c in: #red.
+	].
+	c xlabel: 'Other contrib'.
+	c ylabel: 'My Contrib'.
+	c title: 'Game of ', (n asString) , ' subjects'.
+	c addDecoration: RSHorizontalTick new integer;
+		addDecoration: RSVerticalTick new integer.
+	c show.
+]
+
 { #category : #accessing }
 Population >> subjects [
 	^ subjects

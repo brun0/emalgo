@@ -72,7 +72,7 @@ EMAlgo class >> example [
 	algo initSubjectsProbasOfStrategies.
 	algo updateShares.
 	algo estimateParametersSimply.
-	1 to: 10 do: [: i |
+	1 to: 20 do: [: i |
 		algo computeSubjectsProbasOfStrategies.
 		algo updateShares.
 		algo estimateParametersSimply].

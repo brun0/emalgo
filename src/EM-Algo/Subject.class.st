@@ -19,6 +19,18 @@ Subject >> addTour: aTour [
 self tours add: aTour
 ]
 
+{ #category : #visualization }
+Subject >> displayOn: aChart in: aRSColor [
+	| p1 p2 points |
+	points:= self tours asSortedCollection: [:t1 :t2 | t1 expectationOfOtherContrib <= t2 expectationOfOtherContrib ].
+	p1 := RSScatterPlot new x: (points collect: [:t | t expectationOfOtherContrib]) y: (points collect: [:t | t contrib]).
+	p2 := RSLinePlot new x: (points collect: [:t | t expectationOfOtherContrib]) y: (points collect: [:t | t contrib]).
+	p1 color: aRSColor. 
+	p2 color: aRSColor.
+	aChart addPlot: p1.
+	aChart addPlot: p2.
+]
+
 { #category : #deprecated }
 Subject >> fi [
 	^ fi
