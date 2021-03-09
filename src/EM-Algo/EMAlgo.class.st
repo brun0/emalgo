@@ -69,7 +69,7 @@ EMAlgo class >> example [
 		generateSyntheticPopOf: algo strategies 
 		withParameters: (Parameters new alpha: 0.8; rhoMoins: 0.8; rhoPlus: 0.8).
 	algo initPq.
-	algo initSubjectsProbasOfStrategies.
+	algo computeSubjectsProbasOfStrategies.
 	algo updateShares.
 	algo estimateParametersSimply.
 	1 to: 20 do: [: i |
@@ -143,6 +143,31 @@ EMAlgo class >> exampleHill0 [
 	^maxim
 	"algo updatePqs.
 	^algo"
+]
+
+{ #category : #examples }
+EMAlgo class >> exampleInitClasses [
+	"Example with the new version of algorithm"
+
+	| algo |
+	self initT1.
+	algo := self new.
+	EMAlgo currentInstance: algo.
+	algo init.
+	algo population: Population new.
+	algo population rGN: algo rNG.
+	algo population 
+		generateSyntheticPopOf: algo strategies 
+		withParameters: (Parameters new alpha: 0.8; rhoMoins: 0.8; rhoPlus: 0.8).
+	algo initPq.
+	algo initSubjectsProbasOfStrategies.
+	algo updateShares.
+	algo estimateParametersSimply.
+	1 to: 20 do: [: i |
+		algo computeSubjectsProbasOfStrategies.
+		algo updateShares.
+		algo estimateParametersSimply].
+	^ algo
 ]
 
 { #category : #'initailize-release' }
