@@ -304,6 +304,79 @@ EMAlgo >> dataFolder: anObject [
 	dataFolder := anObject
 ]
 
+{ #category : #visualization }
+EMAlgo >> diplaySamples [
+" Display one graph per strategy with sample subjects games on porbability map "
+self population showSampleOf12Subjects 
+]
+
+{ #category : #visualization }
+EMAlgo >> displayProbasOf: aStrategy on: aRSChart [
+]
+
+{ #category : #visualization }
+EMAlgo >> displayProbasOf: aStrategy on: aRSChart withParameters: aParameters [
+| tiles othersContrib plot canvas xScale yScale|
+	canvas := aRSChart canvas.
+	xScale := aRSChart plots first xScale.
+	yScale := aRSChart plots first yScale.
+	tiles := OrderedCollection new.
+	self class possibleContribs do: [:myContrib |
+		self class possibleContribs do: [:aContrib |
+			othersContrib := aContrib * 7.
+			tiles add: (RSBox new
+		position: (xScale scale: othersContrib) @ (yScale scale: myContrib);
+		extent: ((((xScale scale: 0) - (xScale scale:175)) /(self class possibleContribs size)) abs)@((((yScale scale: 0) - (yScale scale:25)) /(self class possibleContribs size)) abs);
+		model: (aStrategy probaOf: myContrib when: othersContrib withParameters: aParameters);
+		popup;
+		yourself). ]
+	 	].
+	tiles do: [:aTile |
+		canvas addShape: aTile
+		 ].
+		RSNormalizer color
+			shapes: tiles;
+			normalize: #yourself.
+]
+
+{ #category : #visualization }
+EMAlgo >> displayProbasOf: aStrategy withParameters: aParameters [
+
+| aRSChart p1 |
+aRSChart := RSChart new.
+p1 := RSScatterPlot new x: #(0 10 175) y: #(0 10 25).
+"p1 createXScale. 
+p1 createYScale."
+aRSChart addPlot: p1.
+aRSChart show.
+self displayProbasOf: aStrategy on: aRSChart withParameters: aParameters.
+aRSChart show
+]
+
+{ #category : #visualization }
+EMAlgo >> displaySomePlayersGamesOverProbasOf: aStrategy withParameters: aParameters [
+
+| aRSChart p1 n |
+aRSChart := RSChart new.
+n := 12.
+p1 := RSScatterPlot new x: #(0 10 175) y: #(0 10 25).
+"p1 createXScale. 
+p1 createYScale."
+aRSChart addPlot: p1.
+aRSChart build.
+aRSChart addDecoration: (RSChartTitleDecoration new title: 'Game of ', (n asString) , ' subjects over proba distribution of ', (aStrategy class name asString); fontSize: 7.5).
+self displayProbasOf: aStrategy on: aRSChart withParameters: aParameters.
+self population showSampleOf: n on: aRSChart.
+]
+
+{ #category : #visualization }
+EMAlgo >> displaySomePlayersGamesOverProbasOfStrategieswithParameters: aParameters [
+
+self strategies do: [:strat | 
+	self displaySomePlayersGamesOverProbasOf: strat  withParameters: aParameters
+].
+]
+
 { #category : #accessing }
 EMAlgo >> ds [
 	^ ds

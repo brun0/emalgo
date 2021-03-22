@@ -77,7 +77,7 @@ Population >> generateSyntheticPopOf: strategies withParameters: aParameters [
 			self subjects at: subject label put: subject.
 			1 to: 20 do: [:tn | tour := Tour new.
 			tour expectationOfOtherContrib: (EMAlgo possibleContribs atRandom) * 7 .
-			tour contrib: (aStrat bestChoiceWhen: tour expectationOfOtherContrib whenParameters: aParameters) + (normalError random).
+			tour contrib: (((aStrat bestChoiceWhen: tour expectationOfOtherContrib whenParameters: aParameters) + (normalError random) min: 25) max: 0).
 			tour nb: tn.
 			subject addTour: tour.
 			 ]]
@@ -114,25 +114,46 @@ Population >> rGN: anObject [
 ]
 
 { #category : #visualization }
+Population >> showSampleOf12Subjects [
+"a Population"
+	| n c |
+	n := 12.
+	c := RSChart new.
+	c title: 'Game of ', (n asString) , ' subjects'.
+^ self showSampleOf: n on: c.
+]
+
+{ #category : #visualization }
 Population >> showSampleOf8Subjects [
 "a Population"
-	| b c sub n colors col |
+	| n c |
 	n := 8.
 	c := RSChart new.
+	c title: 'Game of ', (n asString) , ' subjects'.
+^ self showSampleOf: n on: c.
+]
+
+{ #category : #visualization }
+Population >> showSampleOf: nBSubjects on: aRSChart [
+"a Population"
+	| b c sub n colors col classes |
+	n := nBSubjects.
+	c := aRSChart.
 	b := RSLegend new.	
 	b container: c canvas.
 	b title: 'Subjects labels'.
 	colors := RSColorPalette qualitative accent8.
-	col := 0.
+	classes := Set new.
 	n timesRepeat: [ 
-		col := col +1 .
 	sub := self subjects keys atRandom.
+	col := (sub asString substrings: '_') first.
 	(self subjects at: sub) displayOn: c in: (colors scale: col).
-	b text: sub withCircleColor: (colors scale: col).
+	classes add: col.
 	].
+	classes do: [:cla | 
+		b text: cla withCircleColor: (colors scale: cla) ].
 	c xlabel: 'Other contrib'.
 	c ylabel: 'My Contrib'.
-	c title: 'Game of ', (n asString) , ' subjects'.
 	c addDecoration: RSHorizontalTick new integer;
 		addDecoration: RSVerticalTick new integer.
 	b legendDo: [ :l |
@@ -141,28 +162,10 @@ Population >> showSampleOf8Subjects [
 			padding: 20;
 			scaleBy: 0.5].
 	b location 
-		inner; bottom; right; offset: -10.
+		outer; right; middle; offset: 10.
 	b build.
 	c show.
-]
-
-{ #category : #visualization }
-Population >> showSampleOf: nBSubjects [
-"a Population"
-	| c sub n colors |
-	n := nBSubjects.
-	c := RSChart new.
-	colors := RSColorPalette qualitative accent8.
-	n timesRepeat: [ 
-	sub := self subjects keys atRandom.
-	(self subjects at: sub) displayOn: c in: #red.
-	].
-	c xlabel: 'Other contrib'.
-	c ylabel: 'My Contrib'.
-	c title: 'Game of ', (n asString) , ' subjects'.
-	c addDecoration: RSHorizontalTick new integer;
-		addDecoration: RSVerticalTick new integer.
-	c show.
+	^ c
 ]
 
 { #category : #accessing }
